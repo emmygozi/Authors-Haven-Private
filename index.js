@@ -1,14 +1,15 @@
-const fs = require("fs"),
-    http = require("http"),
-    path = require("path"),
-    methods = require("methods"),
-    express = require("express"),
-    bodyParser = require("body-parser"),
-    session = require("express-session"),
-    cors = require("cors"),
-    passport = require("passport"),
-    errorhandler = require("errorhandler"),
-    mongoose = require("mongoose");
+import fs from "fs";
+import http from "http";
+import path from "path";
+import methods from "methods";
+import express from "express";
+import session from "express-session";
+import cors from "cors";
+import passport from "passport";
+import errorhandler from "errorhandler";
+import { connect, set } from "mongoose";
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -50,7 +51,7 @@ require("./models/User");
 app.use(require("./routes"));
 
 /// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     const err = new Error("Not Found");
     err.status = 404;
     next(err);
@@ -61,7 +62,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (!isProduction) {
-    app.use(function(err, req, res, next) {
+    app.use((err, req, res, next) => {
         console.log(err.stack);
 
         res.status(err.status || 500);
@@ -77,7 +78,7 @@ if (!isProduction) {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.json({
         errors: {
