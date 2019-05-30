@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('users', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -32,11 +32,9 @@ module.exports = {
       type: Sequelize.INTEGER,
       allowNull: true
     },
-    hash: {
-      type: Sequelize.STRING
-    },
-    salt: {
-      type: Sequelize.STRING
+    password: {
+      type: Sequelize.STRING,
+      allowNull: false
     },
     createdAt: {
       allowNull: false,

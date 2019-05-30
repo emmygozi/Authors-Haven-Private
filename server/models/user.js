@@ -14,20 +14,19 @@ module.exports = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
     favorites: DataTypes.INTEGER,
     following: DataTypes.INTEGER,
-    hash: DataTypes.STRING,
-    salt: DataTypes.STRING
+    password: DataTypes.STRING
   }, {
     hooks: {
       beforeCreate: user => User.hashPassword(user),
       beforeUpdate: user => User.hashPassword(user)
     }
   });
-  User.associate = (models) => {
-    // associations can be defined here
-  };
+  // User.associate = (models) => {
+  //   // associations can be defined here
+  // };
 
   User.hashPassword = async (user) => {
-    const hash = await bcrypt.hashSync(user.password, SALT_ROUNDS);
+    const hash = await bcrypt.hash(user.dataValues.password, SALT_ROUNDS);
     await user.setDataValue('password', hash);
   };
 

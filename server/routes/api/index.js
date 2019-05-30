@@ -1,11 +1,11 @@
 import express from 'express';
 import userRoutes from './users';
 
-const router = express.Router();
+const apiRoutes = express.Router();
 
-router.use('/', userRoutes);
+apiRoutes.use('/', userRoutes);
 
-router.use((err, req, res, next) => {
+apiRoutes.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     return res.status(422).json({
       errors: Object.keys(err.errors).reduce((errors, key) => {
@@ -18,4 +18,4 @@ router.use((err, req, res, next) => {
   return next(err);
 });
 
-export default router;
+export default apiRoutes;
