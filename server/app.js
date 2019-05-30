@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use('/api', apiRoutes);
+app.use('/', apiRoutes);
 
 app.listen(port, () => {
   debugged(`Listening from port ${port}`);
