@@ -1,10 +1,11 @@
-const path = require('path');
-const Sequelize = require('sequelize');
-const fs = require('fs');
+import path from 'path';
+import Sequelize from 'sequelize';
+import fs from 'fs';
+import configPath from '../helpers/config/database_config';
 
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config/database_config')[env];
+const config = configPath[env];
 
 const db = {};
 

@@ -1,3 +1,2 @@
-require('@babel/register');
-
-module.exports = require('./database_config');
+import '@babel/register';
+import './database_config';
