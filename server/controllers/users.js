@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 import passport from 'passport';
 import models from '../models';
+import { validateLogin, validateSignup, updateDetails } from '../validations/auth';
 
 const { User } = models;
 
@@ -21,7 +22,17 @@ class UserController {
   */
   static async create(req, res, next) {
     try {
+      const { error } = validateSignup(req.body);
+      if (error !== null) {
+        const errorValue = error.details[0].message.replace(/\"/g, '');
+        return res.status(400).json({ status: 400, error: errorValue });
+      }
       const { username, email, password } = req.body;
+      const validUsername = await User.findOne({
+        where: { username }
+      });
+
+      if (validUsername !== null) return res.status(400).json({ status: 400, error: 'Username has already been taken' });
       const [user, created] = await User.findOrCreate({
         where: { email: { [Op.iLike]: email } },
         defaults: {
@@ -48,6 +59,11 @@ class UserController {
   * @static
   */
   static async login(req, res, next) {
+    const { error } = validateLogin(req.body);
+    if (error !== null) {
+      const errorValue = error.details[0].message.replace(/\"/g, '');
+      return res.status(400).json({ status: 400, error: errorValue });
+    }
     passport.authenticate('local', { session: false }, (
       err,
       user,
@@ -60,7 +76,7 @@ class UserController {
       if (user) {
         return res.json({ user });
       }
-      return res.status(422).json(info);
+      return res.status(400).json(info);
     })(req, res, next);
   }
 
@@ -74,15 +90,20 @@ class UserController {
   * @static
   */
   static async updateUser(req, res, next) {
-    const {
-      username, email, bio, image, password
-    } = req.body;
-
     try {
+      const { error } = updateDetails(req.body);
+      if (error !== null) {
+        const errorValue = error.details[0].message.replace(/\"/g, '');
+        return res.status(400).json({ status: 400, error: errorValue });
+      }
+      const {
+        username, email, bio, image, password
+      } = req.body;
+
       const user = await User.findByPk(req.payload.id);
 
       if (!user) {
-        return res.sendStatus(401);
+        return res.sendStatus(400);
       }
 
       const updatedUserDetails = await user.update({
@@ -113,7 +134,7 @@ class UserController {
       const user = await User.findByPk(req.payload.id);
 
       if (!user) {
-        return res.sendStatus(401);
+        return res.sendStatus(400);
       }
 
       return res.send({ user });
