@@ -29,11 +29,6 @@ class UserController {
         return res.status(400).json({ status: 400, error: errorValue });
       }
       const { username, email, password } = req.body;
-      const validUsername = await User.findOne({
-        where: { username }
-      });
-
-      if (validUsername !== null) return res.status(400).json({ status: 400, error: 'Username has already been taken' });
       const [user, created] = await User.findOrCreate({
         where: { email: { [Op.iLike]: email } },
         defaults: {
@@ -42,10 +37,16 @@ class UserController {
           password
         }
       });
-      if (!created) return res.status(400).json({ status: 'fail', error: 'Email has already been taken' });
+      if (!created) return res.status(400).json({ status: 400, error: 'Email has already been taken' });
 
       return res.status(201).send({ status: 'success', user });
     } catch (err) {
+      if (err.errors[0].type === 'unique violation') {
+        return res.status(400).json({
+          status: 400,
+          error: 'Username has already been taken'
+        });
+      }
       next(err);
     }
   }
