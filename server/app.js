@@ -4,6 +4,7 @@ import logger from 'morgan';
 import { config } from 'dotenv';
 import bodyParser from 'body-parser';
 import apiRoutes from './routes';
+import errorHandler from './middlewares/errorHandler';
 
 const debugged = debug('app');
 config();
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use('/', apiRoutes);
+app.use(errorHandler);
 
 app.listen(port, () => {
   debugged(`Listening from port ${port}`);

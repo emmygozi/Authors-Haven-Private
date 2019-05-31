@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import passport from 'passport';
 import models from '../models';
 
@@ -19,13 +20,21 @@ class UserController {
   * @static
   */
   static async create(req, res, next) {
-    const { username, email, password } = req.body;
-
     try {
-      const user = await User.create({ username, email, password });
-      return res.status(201).send({ user });
-    } catch (error) {
-      next(error);
+      const { username, email, password } = req.body;
+      const [user, created] = await User.findOrCreate({
+        where: { email: { [Op.iLike]: email } },
+        defaults: {
+          email: email.toLowerCase(),
+          username,
+          password
+        }
+      });
+      if (!created) return res.status(400).json({ status: 'fail', error: 'Email has already been taken' });
+
+      return res.status(201).send({ status: 'success', user });
+    } catch (err) {
+      next(err);
     }
   }
 
@@ -39,13 +48,6 @@ class UserController {
   * @static
   */
   static async login(req, res, next) {
-    if (!req.body.email) {
-      return res.status(422).json({ errors: { email: "can't be blank" } });
-    }
-
-    if (!req.body.password) {
-      return res.status(422).json({ errors: { password: "can't be blank" } });
-    }
     passport.authenticate('local', { session: false }, (
       err,
       user,
@@ -56,7 +58,7 @@ class UserController {
       }
 
       if (user) {
-        return res.json({ user: user.toAuthJSON() });
+        return res.json({ user });
       }
       return res.status(422).json(info);
     })(req, res, next);
