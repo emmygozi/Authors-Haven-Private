@@ -109,7 +109,7 @@ class UserController {
         username, email, bio, image, password
       } = req.body;
 
-      const user = await User.findByPk(1);
+      const user = await User.findByPk(req.payload.id);
 
       if (!user) return res.status(400).json({ status: 400, message: 'User does not exists' });
 
