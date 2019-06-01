@@ -8,8 +8,8 @@ const SALT_ROUNDS = parseInt(process.env.SALT);
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    username: DataTypes.STRING,
-    email: DataTypes.STRING,
+    username: DataTypes.CITEXT,
+    email: DataTypes.CITEXT,
     bio: DataTypes.STRING,
     image: DataTypes.STRING,
     favorites: DataTypes.INTEGER,

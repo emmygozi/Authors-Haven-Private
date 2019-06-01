@@ -17,12 +17,10 @@ export const test = {
 };
 
 export const production = {
-  production: {
-    use_env_variables: process.env.DATABASE_URL,
-    dialect: 'postgres',
-    dialectOptions: {
-      ssl: true,
-    },
-    logging: false,
-  }
+  use_env_variable: process.env.DATABASE_URL,
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: true,
+  },
+  logging: false,
 };

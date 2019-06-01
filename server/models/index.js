@@ -14,11 +14,14 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, {
-    host: config.host,
-    dialect: config.dialect,
-    logging: false,
-    operatorsAliases: Sequelize.Op,
+  const {
+    database,
+    username,
+    password,
+    ...otherConfig
+  } = config;
+  sequelize = new Sequelize(database, username, password, {
+    ...otherConfig
   });
 }
 

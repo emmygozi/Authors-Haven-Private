@@ -7,12 +7,12 @@ module.exports = {
       type: Sequelize.INTEGER
     },
     username: {
-      type: Sequelize.STRING,
+      type: Sequelize.CITEXT,
       unique: true,
       allowNull: false
     },
     email: {
-      type: Sequelize.STRING,
+      type: Sequelize.CITEXT,
       unique: true,
       allowNull: false
     },
@@ -45,5 +45,5 @@ module.exports = {
       type: Sequelize.DATE
     }
   }),
-  down: queryInterface => queryInterface.dropTable('users')
+  down: queryInterface => queryInterface.dropTable('Users')
 };
