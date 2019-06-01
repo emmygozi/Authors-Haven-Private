@@ -9,6 +9,30 @@ by leveraging the modern web.
 
 ---
 
+## Getting Started
+#### Installation
+- Install Git, `NodeJs` and `npm` on your computer
+- Clone this repository using `git clone https://github.com/andela/kingsmen-ah-backend.git`
+- Rename the `.env.sample` to `.env` to setup environment variables
+- Run `npm install` to install all dependencies
+- Run `npm run build` to build the project
+- Run `npm start` to start the server
+- Navigate to `localhost:3000` in browser to access the application
+
+#### Development
+You can run `npm run start:dev` in development with [Nodemon](https://nodemon.io)
+Nodemon watches for changes and restarts your server
+
+#### Testing
+##### Pre-requisite
+- [Postman](https://getpostman.com) - API Toolchain
+
+##### Testing with Postman
+- After installing as shown above
+- Navigate to [localhost:3000](localhost:3000) in Postman to gain access to the application
+
+---
+
 ## API Spec
 
 The preferred JSON object to be returned by the API should be structured as follows:
