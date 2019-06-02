@@ -86,4 +86,8 @@ router.post("/users", (req, res, next) => {
         .catch(next);
 });
 
+router.get('/pass-travis', (req, res, next) => {
+    return res.status(200).json({ travis: 'pass'});
+});
+
 module.exports = router;
