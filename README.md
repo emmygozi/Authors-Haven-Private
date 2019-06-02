@@ -14,6 +14,8 @@ by leveraging the modern web.
 - Install Git, `NodeJs` and `npm` on your computer
 - Clone this repository using `git clone https://github.com/andela/kingsmen-ah-backend.git`
 - Rename the `.env.sample` to `.env` to setup environment variables
+- Install Postgres of your computer.
+- Install `sequelize-cli` globally by running `npm install -g sequelize-cli`
 - Run `npm install` to install all dependencies
 - Run `npm run build` to build the project
 - Run `npm start` to start the server
