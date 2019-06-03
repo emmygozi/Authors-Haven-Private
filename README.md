@@ -1,16 +1,43 @@
 [![Build Status](https://travis-ci.org/andela/kingsmen-ah-backend.svg?branch=develop)](https://travis-ci.org/andela/kingsmen-ah-backend)
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com) [![Coverage Status](https://coveralls.io/repos/github/andela/kingsmen-ah-backend/badge.svg?branch=develop)]
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com) [![Coverage Status](https://coveralls.io/repos/github/andela/kingsmen-ah-backend/badge.svg?branch=develop)](https://coveralls.io/github/andela/kingsmen-ah-backend?branch=develop)
+# Authors Haven - A Social platform for the creative at heart.
 
-Authors Haven - A Social platform for the creative at heart.
-=======
 
 ## Vision
+
 Create a community of like minded authors to foster inspiration and innovation
 by leveraging the modern web.
 
 ---
 
+## Getting Started
+#### Installation
+- Install Git, `NodeJs` and `npm` on your computer
+- Clone this repository using `git clone https://github.com/andela/kingsmen-ah-backend.git`
+- Rename the `.env.sample` to `.env` to setup environment variables
+- Install Postgres of your computer.
+- Install `sequelize-cli` globally by running `npm install -g sequelize-cli`
+- Run `npm install` to install all dependencies
+- Run `npm run build` to build the project
+- Run `npm start` to start the server
+- Navigate to `localhost:3000` in browser to access the application
+
+#### Development
+You can run `npm run start:dev` in development with [Nodemon](https://nodemon.io)
+Nodemon watches for changes and restarts your server
+
+#### Testing
+##### Pre-requisite
+- [Postman](https://getpostman.com) - API Toolchain
+
+##### Testing with Postman
+- After installing as shown above
+- Navigate to [localhost:3000](localhost:3000) in Postman to gain access to the application
+
+---
+
 ## API Spec
+
 The preferred JSON object to be returned by the API should be structured as follows:
 
 ### Users (for authentication)
@@ -26,7 +53,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   }
 }
 ```
+
 ### Profile
+
 ```source-json
 {
   "profile": {
@@ -37,7 +66,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   }
 }
 ```
+
 ### Single Article
+
 ```source-json
 {
   "article": {
@@ -59,7 +90,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   }
 }
 ```
+
 ### Multiple Articles
+
 ```source-json
 {
   "articles":[{
@@ -99,7 +132,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   "articlesCount": 2
 }
 ```
+
 ### Single Comment
+
 ```source-json
 {
   "comment": {
@@ -116,7 +151,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   }
 }
 ```
+
 ### Multiple Comments
+
 ```source-json
 {
   "comments": [{
@@ -134,7 +171,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   "commentsCount": 1
 }
 ```
+
 ### List of Tags
+
 ```source-json
 {
   "tags": [
@@ -143,7 +182,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   ]
 }
 ```
+
 ### Errors and Status Codes
+
 If a request fails any validations, expect errors in the following format:
 
 ```source-json
@@ -155,16 +196,16 @@ If a request fails any validations, expect errors in the following format:
   }
 }
 ```
+
 ### Other status codes:
+
 401 for Unauthorized requests, when a request requires authentication but it isn't provided
 
 403 for Forbidden requests, when a request may be valid but the user doesn't have permissions to perform the action
 
 404 for Not found requests, when a resource can't be found to fulfill the request
 
-
-Endpoints:
-----------
+## Endpoints:
 
 ### Authentication:
 
