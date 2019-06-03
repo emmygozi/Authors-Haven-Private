@@ -1,7 +1,6 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import trim from '../middlewares/trim';
-import app from '../app';
 
 const { expect, assert } = chai;
 
