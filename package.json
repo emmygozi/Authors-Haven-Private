@@ -11,7 +11,7 @@
     "migrate:undo:all": "sequelize db:migrate:undo:all",
     "migrate:undo": "sequelize db:migrate:undo",
     "refreshdb": "sequelize db:migrate:undo:all && sequelize db:migrate",
-    "heroku-postbuild": "npm run build",
+    "heroku-postbuild": "npm run build && npm run migrate",
     "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
@@ -41,6 +41,7 @@
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^5.8.6",
+    "sequelize-cli": "^5.4.0",
     "sqlite3": "^4.0.8"
   },
   "devDependencies": {
