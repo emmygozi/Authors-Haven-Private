@@ -2,9 +2,18 @@
   "name": "kingsmen-ah-backend",
   "description": "A community of like minded authors that fosters inspiration and innovation by leveraging the modern web.",
   "scripts": {},
-  "env": {},
+  "env": {
+    "SALT": {
+      "required": true
+    },
+    "DATABASE_URL": {
+      "required": true
+    }
+  },
   "formation": {},
-  "addons": [],
+  "addons": [
+    "heroku-postgresql"
+  ],
   "buildpacks": [{
     "url": "heroku/nodejs"
   }],
