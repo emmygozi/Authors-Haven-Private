@@ -1,0 +1,12 @@
+{
+  "name": "kingsmen-ah-backend",
+  "description": "A community of like minded authors that fosters inspiration and innovation by leveraging the modern web.",
+  "scripts": {},
+  "env": {},
+  "formation": {},
+  "addons": [],
+  "buildpacks": [{
+    "url": "heroku/nodejs"
+  }],
+  "stack": "heroku-18"
+}
