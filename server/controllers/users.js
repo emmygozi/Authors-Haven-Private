@@ -1,6 +1,7 @@
 import passport from 'passport';
 import models from '../models';
 import { validateLogin, validateSignup, updateDetails } from '../validations/auth';
+import { validationResponse, validateUniqueResponse } from '../helpers/validationResponse';
 
 const { User } = models;
 
@@ -29,28 +30,14 @@ class UserController {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({
           status: 400,
-          errors: err.details.reduce((result, currentValue) => {
-            if (!Object.hasOwnProperty.call(result, currentValue.context.key)) {
-              result[currentValue.context.key] = currentValue.message;
-            }
-            return result;
-          }, {})
+          errors: validationResponse(err)
         });
       }
 
       if (err.errors && err.errors[0].type === 'unique violation') {
         return res.status(400).json({
           status: 400,
-          errors: err.errors.reduce((result, currentValue) => {
-            if (result.type === 'unique violation') {
-              result[currentValue.path] = `${currentValue.path} has already been taken`;
-            } else if (currentValue.path) {
-              result[currentValue.path] = currentValue.message;
-            } else {
-              result.global = currentValue.message;
-            }
-            return result;
-          }, {})
+          errors: validateUniqueResponse(err)
         });
       }
       next(err);
