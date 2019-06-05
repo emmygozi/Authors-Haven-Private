@@ -2,6 +2,7 @@ import passport from 'passport';
 import models from '../models';
 import { validateLogin, validateSignup, updateDetails } from '../validations/auth';
 import { validationResponse, validateUniqueResponse } from '../helpers/validationResponse';
+import getUserObject from '../helpers/getMinUserObject';
 
 const { User } = models;
 
@@ -25,7 +26,7 @@ class UserController {
       const userDetails = await validateSignup(req.body);
       const user = await User.create(userDetails);
 
-      return res.status(201).send({ status: 'success', message: 'User created successfully', user });
+      return res.status(201).send({ status: 'success', message: 'User created successfully', user: getUserObject(user) });
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({
