@@ -1,12 +1,29 @@
 {
   "name": "kingsmen-ah-backend",
   "description": "A community of like minded authors that fosters inspiration and innovation by leveraging the modern web.",
-  "scripts": {},
-  "env": {},
+  "scripts": {
+    "postdeploy": "heroku config:set HOST_NAME=${HEROKU_APP_NAME}.herokuapp.com --app ${HEROKU_APP_NAME} && npm run refreshdb"
+  },
+  "env": {
+    "SALT": {
+      "required": true
+    },
+    "DATABASE_URL": {
+      "required": true
+    },
+    "HEROKU_APP_NAME": {
+      "required": true
+    },
+    "HEROKU_PARENT_APP_NAME": {
+      "required": true
+    }
+  },
   "formation": {},
-  "addons": [],
-  "buildpacks": [{
-    "url": "heroku/nodejs"
-  }],
+  "addons": ["heroku-postgresql"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
   "stack": "heroku-18"
 }
