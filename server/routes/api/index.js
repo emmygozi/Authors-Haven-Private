@@ -5,5 +5,4 @@ const apiRoutes = express.Router();
 
 apiRoutes.use('/', userRoutes);
 
-
 export default apiRoutes;

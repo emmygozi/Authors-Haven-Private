@@ -1,9 +1,7 @@
 {
   "name": "kingsmen-ah-backend",
   "description": "A community of like minded authors that fosters inspiration and innovation by leveraging the modern web.",
-  "scripts": {
-    "postdeploy": "heroku config:set HOST_NAME=${HEROKU_APP_NAME}.herokuapp.com --app ${HEROKU_APP_NAME} && npm run refreshdb"
-  },
+  "scripts": {},
   "env": {
     "SALT": {
       "required": true

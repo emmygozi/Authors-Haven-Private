@@ -3,6 +3,8 @@ import debug from 'debug';
 import logger from 'morgan';
 import { config } from 'dotenv';
 import bodyParser from 'body-parser';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger';
 import apiRoutes from './routes';
 import errorHandler from './middlewares/errorHandler';
 
@@ -17,6 +19,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+// swagger-ui-express for API endpoint documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/', apiRoutes);
 app.use(errorHandler);
