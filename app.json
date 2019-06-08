@@ -8,9 +8,6 @@
     "SALT": {
       "required": true
     },
-    "DATABASE_URL": {
-      "required": true
-    },
     "HEROKU_APP_NAME": {
       "required": true
     },
