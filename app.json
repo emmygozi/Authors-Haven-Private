@@ -1,7 +1,9 @@
 {
   "name": "kingsmen-ah-backend",
   "description": "A community of like minded authors that fosters inspiration and innovation by leveraging the modern web.",
-  "scripts": {},
+  "scripts": {
+    "postdeploy": "npm run refreshdb"
+  },
   "env": {
     "SALT": {
       "required": true
