@@ -15,7 +15,7 @@ const swaggerDefinition = {
     description: 'A Social platform for the creative at heart',
   },
   host,
-  basePath: '/api'
+  basePath: '/api/v1'
 };
 
 // Options for the swagger docs

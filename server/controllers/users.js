@@ -1,8 +1,10 @@
-import passport from 'passport';
+import bcrypt from 'bcrypt';
 import models from '../models';
 import { validateLogin, validateSignup, updateDetails } from '../validations/auth';
+import Token from '../helpers/Token';
+import userExtractor from '../helpers/userExtractor';
 import { validationResponse, validateUniqueResponse } from '../helpers/validationResponse';
-import getUserObject from '../helpers/getMinUserObject';
+import Response from '../helpers/Response';
 
 const { User } = models;
 
@@ -25,8 +27,12 @@ class UserController {
     try {
       const userDetails = await validateSignup(req.body);
       const user = await User.create(userDetails);
-
-      return res.status(201).send({ status: 'success', message: 'User created successfully', user: getUserObject(user) });
+      const payload = {
+        id: user.id,
+        email: user.email
+      };
+      const token = await Token.create(payload);
+      return res.status(201).json({ status: 'success', message: 'User created successfully', user: userExtractor(user, token) });
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({
@@ -55,25 +61,32 @@ class UserController {
   * @static
   */
   static async login(req, res, next) {
-    const { error } = validateLogin(req.body);
-    if (error !== null) {
-      const errorValue = error.details[0].message.replace(/\"/g, '');
-      return res.status(400).json({ status: 400, error: errorValue });
+    try {
+      const logindetails = await validateLogin(req.body);
+      const { email, password } = logindetails;
+      const user = await User.findOne({
+        where: {
+          email,
+        }
+      });
+      if (!user) return Response.error(res, 400, 'Invalid email or password');
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) return Response.error(res, 400, 'Invalid email or password');
+      const payload = {
+        id: user.id,
+        email: user.email
+      };
+      const token = await Token.create(payload);
+      return res.status(200).json({ status: 'success', message: 'User successfully logged in', user: userExtractor(user, token) });
+    } catch (err) {
+      if (err.isJoi && err.name === 'ValidationError') {
+        return res.status(400).json({
+          status: 400,
+          errors: validationResponse(err)
+        });
+      }
+      next(err);
     }
-    passport.authenticate('local', { session: false }, (
-      err,
-      user,
-      info
-    ) => {
-      if (err) {
-        return next(err);
-      }
-
-      if (user) {
-        return res.json({ user });
-      }
-      return res.status(400).json(info);
-    })(req, res, next);
   }
 
   /**

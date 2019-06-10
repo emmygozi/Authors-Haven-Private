@@ -6,10 +6,12 @@ export const validationResponse = error => error.details.reduce((result, current
 }, {});
 
 export const validateUniqueResponse = error => error.errors.reduce((result, currentValue) => {
-  if (result.type === 'unique violation') {
+  if (currentValue.type === 'unique violation') {
+    result[currentValue.path] = `${currentValue.path} has already been taken`;
+  } else if (currentValue.path) {
     result[currentValue.path] = currentValue.message;
   } else {
-    result.global = `${currentValue.path} has already been taken`;
+    result.global = currentValue.message;
   }
   return result;
 }, {});

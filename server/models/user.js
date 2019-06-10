@@ -3,7 +3,9 @@ import { config } from 'dotenv';
 
 config();
 
-const SALT_ROUNDS = Number(process.env.SALT);
+const salt = process.env.SALT || 5;
+// eslint-disable-next-line radix
+const SALT_ROUNDS = parseInt(salt);
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {

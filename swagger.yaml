@@ -6,7 +6,7 @@ info:
   license:
     name: "MIT"
     url: "https://www.apache.org/licenses/LICENSE-2.0.html"
-basePath: "/api"
+basePath: "/api/v1"
 tags:
 - name: "user"
   description: "User operations"
@@ -14,7 +14,7 @@ schemes:
   - "https"
   - "http"
 paths:
-  /users:
+  /auth/register:
     post:
       tags:
       - "user"
@@ -50,29 +50,29 @@ paths:
         minLength: 5
         maxLength: 255
       - in: "formData"
-        name: "bio"
-        description: "Brief information about the user"
+        name: "firstname"
+        description: "First name of user"
         required: false
         type: "string"
         format: "text"
-        minLength: 5
-        maxLength: 500
+        minLength: 2
+        maxLength: 100
       - in: "formData"
-        name: "image"
-        description: "The user image"
+        name: "lastname"
+        description: "Last name of user"
         required: false
+        type: "string"
+        format: "text"
+        minLength: 2
+        maxLength: 100
       - in: "formData"
-        name: "favorites"
-        description: "The user's favorite article"
+        name: "middlename"
+        description: "Middle name of user"
         required: false
-        type: array
-        items:
-          type: "string"
-      - in: "formData"
-        name: "following"
-        description: "Number of people user is following"
-        required: false
-        type: "integer"
+        type: "string"
+        format: "text"
+        minLength: 2
+        maxLength: 100
       responses:
         201:
           description: "User created successfully"
@@ -80,7 +80,7 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "Invalid email/password supplied"
-  /user:
+  /auth/login:
     post:
       tags:
       - "user"

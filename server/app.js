@@ -4,8 +4,8 @@ import logger from 'morgan';
 import { config } from 'dotenv';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
+import authRoutes from './routes/api/users';
 import swaggerSpec from './config/swagger';
-import apiRoutes from './routes';
 import errorHandler from './middlewares/errorHandler';
 
 const debugged = debug('app');
@@ -20,11 +20,14 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+app.use('/api/v1/auth', authRoutes);
 // swagger-ui-express for API endpoint documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-app.use('/', apiRoutes);
 app.use(errorHandler);
+app.use('*', (req, res) => res.status(404).send({
+  status: 404,
+  message: 'Page Not Found'
+}));
 
 app.listen(port, () => {
   debugged(`Listening from port ${port}`);
