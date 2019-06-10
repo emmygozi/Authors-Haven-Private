@@ -3,27 +3,111 @@ import { config } from 'dotenv';
 
 config();
 
-// eslint-disable-next-line radix
-const SALT_ROUNDS = parseInt(process.env.SALT);
+const SALT_ROUNDS = Number(process.env.SALT);
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    username: DataTypes.CITEXT,
-    email: DataTypes.CITEXT,
-    bio: DataTypes.STRING,
-    image: DataTypes.STRING,
-    favorites: DataTypes.INTEGER,
-    following: DataTypes.INTEGER,
-    password: DataTypes.STRING
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    },
+    username: {
+      type: DataTypes.CITEXT,
+      allowNull: false,
+      unique: true
+    },
+    email: {
+      type: DataTypes.CITEXT,
+      allowNull: false,
+      unique: true
+    },
+    firstname: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    lastname: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    middlename: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
   }, {
     hooks: {
       beforeCreate: user => User.hashPassword(user),
       beforeUpdate: user => User.hashPassword(user)
     }
   });
-  // User.associate = (models) => {
-  //   // associations can be defined here
-  // };
+
+  User.associate = (models) => {
+    const {
+      Follower, Article, Profile, Social, ReportArticle, Rating, PasswordReset,
+      ArticleLike, CommentLike, Role
+    } = models;
+
+    User.hasOne(Profile, {
+      foreignKey: 'userId',
+      as: 'profile'
+    });
+
+    User.hasMany(Follower, {
+      foreignKey: 'followingId',
+      as: 'following',
+    });
+
+    User.hasMany(Follower, {
+      foreignKey: 'followerId',
+      as: 'follower',
+    });
+    User.hasMany(Article, {
+      foreignKey: 'userId',
+      as: 'author',
+    });
+
+    User.hasMany(Social, {
+      foreignKey: 'userId',
+      as: 'social'
+    });
+
+    User.hasMany(Rating, {
+      foreignKey: 'userId',
+      as: 'rating'
+    });
+
+    User.hasMany(ReportArticle, {
+      foreignKey: 'userId'
+    });
+
+    User.hasOne(PasswordReset, {
+      foreignKey: 'userId'
+    });
+
+    User.hasMany(ArticleLike, {
+      foreignKey: 'userId'
+    });
+
+    User.hasMany(CommentLike, {
+      foreignKey: 'userId'
+    });
+
+    User.belongsToMany(Role, {
+      through: 'UserRole',
+      as: 'role',
+      foreignKey: 'userId'
+    });
+  };
 
   User.hashPassword = async (user) => {
     const hash = await bcrypt.hash(user.dataValues.password, SALT_ROUNDS);
