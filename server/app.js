@@ -4,7 +4,7 @@ import logger from 'morgan';
 import { config } from 'dotenv';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
-import authRoutes from './routes/api/users';
+import routes from './routes';
 import swaggerSpec from './config/swagger';
 import errorHandler from './middlewares/errorHandler';
 
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use('/api/v1/auth', authRoutes);
+app.use('/api', routes);
 // swagger-ui-express for API endpoint documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(errorHandler);

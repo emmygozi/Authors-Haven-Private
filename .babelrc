@@ -10,7 +10,23 @@
     ]
   ],
   "plugins": [
-    "@babel/plugin-transform-runtime", 
-    "@babel/plugin-proposal-object-rest-spread"
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-object-rest-spread",
+    [
+      "babel-plugin-module-resolver",
+      {
+        "root": [
+          "./server"
+        ],
+        "alias": {
+          "@tests": "./server/tests",
+          "@controllers": "./server/controllers",
+          "@helpers": "./server/helpers",
+          "@models": "./server/models",
+          "@validations": "./server/validations",
+          "@routes": "./server/routes"
+        }
+      }
+    ]
   ]
 }

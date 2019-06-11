@@ -1,10 +1,9 @@
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable('Ratings', {
     id: {
+      type: Sequelize.INTEGER,
       allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: Sequelize.INTEGER
+      primaryKey: true
     },
     userId: {
       type: Sequelize.UUID,

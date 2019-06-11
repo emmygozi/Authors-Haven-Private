@@ -13,7 +13,7 @@ export const development = {
 
 export const test = {
   dialect: 'sqlite',
-  storage: path.join(__dirname, '..', 'database_test.sqlite'),
+  storage: path.join(__dirname, '..', 'database_test.sqlite3'),
 };
 
 export const production = {

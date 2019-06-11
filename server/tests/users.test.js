@@ -160,6 +160,27 @@ describe('TESTS TO LOGIN A USER', () => {
       throw err.message;
     }
   });
+  it('should return an invalid login when password does not match', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/auth/login')
+        .send({
+          email: 'justsine@snqwst.com',
+          password: '11224b'
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.global).to.equal('Invalid email or password');
+          expect(res.body).to.have.property('status');
+          const returnStatus = 400;
+          expect(res.body).to.have.property('status', returnStatus);
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
 
   it('should return `email is required` if email is absent ', (done) => {
     try {

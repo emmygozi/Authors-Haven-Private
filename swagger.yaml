@@ -10,6 +10,8 @@ basePath: "/api/v1"
 tags:
 - name: "user"
   description: "User operations"
+- name: "articles"
+  description: "Articles operations"
 schemes:
   - "https"
   - "http"
@@ -113,6 +115,46 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "Invalid email/password supplied"
+  /articles/rate:
+    post:
+      tags:
+      - "articles"
+      summary: "Rate Article"
+      description: "Rates an article"
+      operationId: "rateArticle"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "articleId"
+        in: "formData"
+        description: "ID of the article to be rated"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "rate"
+        in: "formData"
+        description: "Rating you are giving to the article"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Rating has been updated"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        201:
+          description: "New rating has been made"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Invalid articleId or rating supplied"
+      security:
+      - api_key: []
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "token"
+    in: "header"
 definitions:
   User:
     type: "object"
@@ -137,13 +179,27 @@ definitions:
       following:
         type: "integer"
         format: "int64"
+  Rating:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      userId:
+        type: "string"
+        format: "uuid"
+      articleId:
+        type: "string"
+        format: "uuid"
+      ratings:
+        type: "integer"
   ApiResponse:
     type: "object"
     properties:
       status:
         type: "integer"
         format: "int32"
-      errors:
+      data:
         type: "object"
         items:
           type: "object"
