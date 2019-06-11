@@ -14,7 +14,7 @@
     "heroku-postbuild": "npm run build && npm run migrate",
     "clean": "rm -rf dist",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "test": "npm run refreshdb && nyc --reporter=html --reporter=text --require @babel/register --env=test mocha --timeout 10000 ./server/tests/*.js --exit"
+    "test": "npm run refreshdb && nyc --reporter=html --reporter=text --require @babel/register --env=test mocha --timeout 10000 ./server/tests/index.js --exit"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",

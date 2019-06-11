@@ -5,6 +5,9 @@ import app from '../app';
 chai.use(chaiHttp);
 const { expect } = chai;
 
+// eslint-disable-next-line import/no-mutable-exports
+let userToken;
+
 describe('TESTS TO SIGNUP A USER', () => {
   it('should return `username is required` if username is absent ', (done) => {
     try {
@@ -126,6 +129,7 @@ describe('TESTS TO LOGIN A USER', () => {
           password: '1234567'
         })
         .end((err, res) => {
+          userToken = res.body.user.token;
           expect(res.status).to.equal(200);
           expect(res.body.user).to.be.an('object');
           expect(res.body.user.token).to.be.a('string');
@@ -180,3 +184,5 @@ describe('TESTS TO LOGIN A USER', () => {
     }
   });
 });
+
+export default userToken;
