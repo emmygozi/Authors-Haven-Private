@@ -11,7 +11,7 @@ describe('TESTS TO SIGNUP A USER', () => {
   it('should return `username is required` if username is absent ', (done) => {
     try {
       chai.request(app)
-        .post('/api/v1/auth/register')
+        .post('/api/v1/users')
         .send({
           email: 'justsine@snqwst.com',
           password: '1234567'
@@ -31,7 +31,7 @@ describe('TESTS TO SIGNUP A USER', () => {
   it('should return email is required if email is absent ', (done) => {
     try {
       chai.request(app)
-        .post('/api/v1/auth/register')
+        .post('/api/v1/users')
         .send({
           username: 'Sanchezqwst',
           password: '1234567'
@@ -51,7 +51,7 @@ describe('TESTS TO SIGNUP A USER', () => {
   it('should return success status 201', (done) => {
     try {
       chai.request(app)
-        .post('/api/v1/auth/register')
+        .post('/api/v1/users')
         .send({
           username: 'Sanchezqwst',
           email: 'justsine@snqwst.com',
@@ -74,7 +74,7 @@ describe('TESTS TO SIGNUP A USER', () => {
   it('should return a duplicate signup', (done) => {
     try {
       chai.request(app)
-        .post('/api/v1/auth/register')
+        .post('/api/v1/users')
         .send({
           username: 'Sanchezqwst',
           email: 'justsine@snqwst.com',
@@ -96,7 +96,7 @@ describe('TESTS TO SIGNUP A USER', () => {
   it('should return an empty entry error', (done) => {
     try {
       chai.request(app)
-        .post('/api/v1/auth/register')
+        .post('/api/v1/users')
         .send({
           username: '',
           email: '',
@@ -212,6 +212,22 @@ describe('TESTS TO LOGIN A USER', () => {
         .end((err, res) => {
           expect(res.status).to.be.equal(201);
           expect(res.body).to.have.property('message');
+          expect(res.body.message).to.be.equal('You are now logged out');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+  it('should return error for already dropped token', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.be.equal(401);
+          expect(res.body).to.have.property('errors');
+          expect(res.body.errors.global).to.be.equal('Invalid Token Provided');
           done();
         });
     } catch (err) {
@@ -243,7 +259,7 @@ describe('TESTS TO LOGIN A USER', () => {
         .end((err, res) => {
           expect(res.statusCode).to.be.equal(401);
           expect(res.body).to.have.property('errors');
-          expect(res.body.errors.global).to.be.equal('Invalid Token');
+          expect(res.body.errors.global).to.be.equal('Invalid Token Provided');
           done();
         });
     } catch (err) {

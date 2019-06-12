@@ -14,8 +14,8 @@
     "heroku-postbuild": "npm run build && npm run migrate",
     "clean": "rm -rf dist",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "pretest": "rm -rf ./server/database_test.sqlite3",
-    "test": "NODE_ENV=test npm run refreshdb && nyc --reporter=html --reporter=text --require @babel/register --env=test mocha --timeout 10000 ./server/tests/*.js --exit"
+    "pretest": "rm -rf ./server/database_test.sqlite3 && NODE_ENV=test npm run refreshdb",
+    "test": "NODE_ENV=test nyc --reporter=html --reporter=text --require @babel/register --env=test mocha --timeout 10000 ./server/tests/*.js --exit"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -50,7 +50,8 @@
     "sinon": "^7.3.2",
     "sqlite3": "^4.0.8",
     "swagger-jsdoc": "^3.2.9",
-    "swagger-ui-express": "^4.0.5"
+    "swagger-ui-express": "^4.0.5",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.4.4",

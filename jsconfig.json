@@ -20,6 +20,9 @@
             "@validations/*": [
                 "./server/validations/*"
             ],
+            "@middlewares/*": [
+                "./server/middlewares/*"
+            ],
             "@routes/*": [
                 "./server/routes/*"
             ]

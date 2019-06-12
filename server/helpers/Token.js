@@ -64,14 +64,14 @@ class Token {
         }
       });
       if (droppedToken) {
-        return Response.error(res, 401, 'This token has been blacklisted');
+        return Response.error(res, 401, 'Invalid Token Provided');
       }
       req.user = user;
       req.decoded = decoded;
       next();
     } catch (error) {
       if (error.name === 'JsonWebTokenError') {
-        return Response.error(res, 401, 'Invalid Token');
+        return Response.error(res, 401, 'Invalid Token Provided');
       }
       next(error);
     }

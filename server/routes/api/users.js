@@ -1,14 +1,10 @@
 import express from 'express';
-import UserController from '../../controllers/users';
-import trim from '../../middlewares/trim';
-import Token from '../../helpers/Token';
+import trim from '@middlewares/trim';
+import UserController from '@controllers/users';
 
-const userRoutes = express.Router();
+const userRouter = express.Router();
 
-userRoutes.get('/user', UserController.getUserDetails);
-userRoutes.put('/user', trim, UserController.updateUser);
-userRoutes.post('/login', trim, UserController.login);
-userRoutes.post('/register', trim, UserController.create);
-userRoutes.post('/logout', Token.authorize, UserController.logout);
+userRouter.post('/', trim, UserController.create);
 
-export default userRoutes;
+
+export default userRouter;
