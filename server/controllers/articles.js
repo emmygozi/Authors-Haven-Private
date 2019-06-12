@@ -1,7 +1,7 @@
 import { validationResponse } from '@helpers/validationResponse';
 import Response from '@helpers/Response';
-import models from '../models';
-import validateRating from '../validations/rating';
+import models from '@models';
+import validateRating from '@validations/rating';
 
 const { User, Article, Rating } = models;
 

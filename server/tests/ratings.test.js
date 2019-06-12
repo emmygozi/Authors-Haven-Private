@@ -1,9 +1,9 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import faker from 'faker';
+import models from '@models';
 import app from '../app';
 import generateToken from './factory/user-factory';
-import models from '@models';
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -90,9 +90,7 @@ describe('TEST TO RATE AN ARTICLE', () => {
         .end((err, res) => {
           expect(res.status).to.equal(400);
           expect(res.body.errors).to.be.an('object');
-          expect(res.body.errors.rate).to.equal(
-            'rate must be one of [1, 2, 3, 4, 5]'
-          );
+          expect(res.body.errors.rate).to.equal('rate must be one of [1, 2, 3, 4, 5]');
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('status', 400);
           done();
