@@ -27,67 +27,55 @@ class ArticleController {
       // Validate the rating
       const articleDetails = await validateRating(req.body);
 
-      const { articleId, rate } = articleDetails;
+      const { rate } = articleDetails;
+      const { articleId } = req.params;
 
       // Check if the article exists
       const article = await Article.findOne({
-        where: { id: articleId }
-      });
-
-      if (!article) return Response.error(res, 404, 'Article does not exist');
-
-      // Get the full details of user and article
-      const moreDetails = await Article.findOne({
         where: { id: articleId },
-        attributes: { exclude: ['updatedAt', 'createdAt'] },
         include: [
           {
             model: User,
             as: 'author',
-            attributes: { exclude: ['password', 'updatedAt', 'createdAt'] }
+            attributes: [
+              'id',
+              'username',
+              'email',
+              'firstname',
+              'lastname',
+              'middlename',
+              'active'
+            ]
           }
-        ],
+        ]
       });
 
-      let fullRatingInfo = { article: moreDetails };
+      if (!article) return Response.error(res, 404, 'Article does not exist');
+      let result;
 
-      // Check if this user has made a rating before
-      const userArticleRating = await Rating.findOne({
-        where: {
-          userId,
-          articleId: req.body.articleId
-        }
-      });
+      // Check if there is a rating
+      const userRating = await article.getRating({ where: { userId } });
+
+      const newRating = { userId, ratings: rate };
 
       let statusCode;
-      let newRating;
-      if (userArticleRating) {
-        // Update the user's rating
-        newRating = await userArticleRating.update({
-          ratings: rate
-        });
+      if (userRating) {
         statusCode = 200;
+        result = await userRating.update(newRating);
       } else {
-        // Create new rating for the user
-        const id = Math.floor(Math.random() * 1000000000) + 1;
-        newRating = await Rating.create({
-          id,
-          userId,
-          articleId,
-          ratings: rate
-        });
         statusCode = 201;
+        result = await article.createRating(newRating);
       }
 
-      // Append the new rate to the full object
-      const { id, ratings } = newRating;
-      fullRatingInfo = {
+      const { id, ratings } = result;
+
+      const fullRatingInfo = {
         id,
         rate: Number(ratings),
-        ...fullRatingInfo
+        article
       };
 
-      if (newRating) return Response.success(res, statusCode, fullRatingInfo);
+      if (result) return Response.success(res, statusCode, fullRatingInfo);
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({

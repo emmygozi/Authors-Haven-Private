@@ -5,6 +5,6 @@ import trim from '@middlewares/trim';
 
 const articleRoutes = express.Router();
 
-articleRoutes.post('/rate', trim, Token.authorize, ArticleController.rate);
+articleRoutes.post('/:articleId/rate', trim, Token.authorize, ArticleController.rate);
 
 export default articleRoutes;
