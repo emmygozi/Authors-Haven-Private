@@ -69,7 +69,9 @@ class ArticleController {
         statusCode = 200;
       } else {
         // Create new rating for the user
+        const id = Math.floor(Math.random() * 1000000000) + 1;
         newRating = await Rating.create({
+          id,
           userId,
           articleId,
           ratings: rate
