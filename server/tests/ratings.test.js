@@ -17,7 +17,7 @@ describe('TEST TO RATE AN ARTICLE', () => {
       email: faker.internet.email(),
       password: faker.internet.password()
     });
-    userToken = await generateToken({ id: newUser.id });
+    userToken = `Bearer ${await generateToken({ id: newUser.id })}`;
   });
 
   it('should not rate article because articleId is not provided in body', (done) => {

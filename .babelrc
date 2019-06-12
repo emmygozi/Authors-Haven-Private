@@ -21,6 +21,7 @@
         "alias": {
           "@tests": "./server/tests",
           "@controllers": "./server/controllers",
+          "@middlewares": "./server/middlewares",
           "@helpers": "./server/helpers",
           "@models": "./server/models",
           "@validations": "./server/validations",

@@ -14,6 +14,7 @@ export const development = {
 export const test = {
   dialect: 'sqlite',
   storage: path.join(__dirname, '..', 'database_test.sqlite3'),
+  logging: false
 };
 
 export const production = {
@@ -22,5 +23,5 @@ export const production = {
   dialectOptions: {
     ssl: true,
   },
-  logging: false,
+  logging: false
 };

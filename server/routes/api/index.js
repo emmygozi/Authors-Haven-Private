@@ -1,10 +1,14 @@
 import express from 'express';
-import userRoutes from './users';
+import userRouter from './users';
+import authRouter from './auth';
 import articleRoutes from './articles';
 
-const apiRoutes = express.Router();
+const apiRouter = express.Router();
 
-apiRoutes.use('/auth', userRoutes);
-apiRoutes.use('/articles', articleRoutes);
+apiRouter.get('/', (request, response) => response.status(200).send('Welcome to the Authors Haven API'));
 
-export default apiRoutes;
+apiRouter.use('/users', userRouter);
+apiRouter.use('/auth', authRouter);
+apiRouter.use('/articles', articleRoutes);
+
+export default apiRouter;

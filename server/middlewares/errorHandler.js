@@ -1,33 +1,41 @@
+import logger from '@helpers/logger';
+
 /**
  * Handlers uncaught errors in the app
  * @function ErrorHandler
- * @param {object} err
+ * @param {object} error
  * @param {object} req
- * @param {object} res
+ * @param {object} response
  * @param {function} next
  * @returns {(function|object)} Function next() or JSON object
  * Gotten from Express Documentation
  */
 
-const errorHandler = (err, req, res, next) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.log(err.stack);
+const errorHandler = (error, request, response, next) => {
+  response.status(error.status || 500);
 
-    return res.status(err.status || 500).json({
+  logger.error({
+    request: request.originalUrl,
+    message: error.message,
+    stack: process.env.NODE_ENV !== 'production' && error.stack
+  });
+
+  if (process.env.NODE_ENV === 'development') {
+    return response.json({
       errors: {
-        message: err.message,
-        error: err
+        global: error.message,
+        error
       }
     });
   }
 
-  if (res.headersSent) {
-    return next(err);
+  if (response.headersSent) {
+    return next(error);
   }
 
-  res.status(err.status || 500).json({
+  response.json({ // we would return 404 error in production environment
     errors: {
-      message: err.message,
+      global: error.message,
       error: {}
     }
   });
