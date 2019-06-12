@@ -66,6 +66,7 @@ class Token {
       if (droppedToken) {
         return Response.error(res, 401, 'This token has been blacklisted');
       }
+      req.user = user;
       req.decoded = decoded;
       next();
     } catch (error) {
