@@ -4,6 +4,8 @@ import app from '../app';
 
 chai.use(chaiHttp);
 const { expect } = chai;
+const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZjZDAwNDBmLTI3MDktNGU0Yi05YjU2LWYzZDk3MmRhNjk4OTg5IiwiZW1haWwiOiJqdXN0c2luZUBzbnF3c3QuY29tIiwiaWF0IjoxNTYwMjA3NTAyLCJleHAiOjE1NjAyOTM5MDJ9.FpXu8SrboezKr57MNcrEA_pGhsMRm0G5ptUGqQje12I';
+let userToken;
 
 describe('TESTS TO SIGNUP A USER', () => {
   it('should return `username is required` if username is absent ', (done) => {
@@ -126,6 +128,7 @@ describe('TESTS TO LOGIN A USER', () => {
           password: '1234567'
         })
         .end((err, res) => {
+          userToken = res.body.user.token;
           expect(res.status).to.equal(200);
           expect(res.body.user).to.be.an('object');
           expect(res.body.user.token).to.be.a('string');
@@ -194,6 +197,53 @@ describe('TESTS TO LOGIN A USER', () => {
           expect(res.body.errors).to.be.an('object');
           expect(res.body.errors.email).to.eql('email is required');
           expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should create a dropped token', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.be.equal(201);
+          expect(res.body).to.have.property('message');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return error for empty token', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/auth/logout')
+        .set('Authorization', '')
+        .end((err, res) => {
+          expect(res.statusCode).to.be.equal(400);
+          expect(res.body).to.have.property('errors');
+          expect(res.body.errors.global).to.be.equal('Invalid token supplied: format Bearer <token>');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return error for invalid token', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${invalidToken}`)
+        .end((err, res) => {
+          expect(res.statusCode).to.be.equal(401);
+          expect(res.body).to.have.property('errors');
+          expect(res.body.errors.global).to.be.equal('Invalid Token');
           done();
         });
     } catch (err) {
