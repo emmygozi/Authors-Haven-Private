@@ -1,24 +1,25 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import faker from 'faker';
-import models from '@models';
 import app from '../app';
-import generateToken from './factory/user-factory';
+import { generateToken, createTestUser } from './factory/user-factory';
+import createTestArticle from './factory/article-factory';
 
 chai.use(chaiHttp);
 const { expect } = chai;
 
 let userToken;
+let validArticleId;
 const invalidArticleId = '00000000-0000-0000-0000-000000000000';
 
 describe('TEST TO RATE AN ARTICLE', () => {
   before(async () => {
-    const newUser = await models.User.create({
-      username: faker.internet.userName(),
-      email: faker.internet.email(),
-      password: faker.internet.password()
-    });
-    userToken = `Bearer ${await generateToken({ id: newUser.id })}`;
+    // Create a user
+    const { id } = await createTestUser({});
+    userToken = `Bearer ${await generateToken({ id })}`;
+
+    //  Create an article
+    const newArticle = await createTestArticle(id, {});
+    validArticleId = newArticle.id;
   });
 
   it('should not rate article because rate is not provided in body', (done) => {
@@ -112,6 +113,48 @@ describe('TEST TO RATE AN ARTICLE', () => {
           expect(res.body.errors.global).to.equal('Article does not exist');
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('status', 404);
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should create a new rating', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${validArticleId}/rate`)
+        .set('Authorization', userToken)
+        .send({ rate: 4 })
+        .end((err, res) => {
+          expect(res.status).to.equal(201);
+          expect(res.body.payload).to.be.an('object');
+          expect(res.body.payload.article.author).to.be.an('object');
+          expect(res.body.payload.article).to.be.an('object');
+          expect(res.body.payload.rate).to.equal(4);
+          expect(res.body).to.have.property('status');
+          expect(res.body).to.have.property('status', 201);
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should update existing rating', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${validArticleId}/rate`)
+        .set('Authorization', userToken)
+        .send({ validArticleId, rate: 3 })
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.payload).to.be.an('object');
+          expect(res.body.payload.article.author).to.be.an('object');
+          expect(res.body.payload.article).to.be.an('object');
+          expect(res.body.payload.rate).to.equal(3);
+          expect(res.body).to.have.property('status');
+          expect(res.body).to.have.property('status', 200);
           done();
         });
     } catch (err) {
