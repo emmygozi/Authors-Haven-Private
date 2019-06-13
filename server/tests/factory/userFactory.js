@@ -1,6 +1,6 @@
 import faker from 'faker';
+import models from '@models';
 import Token from '../../helpers/Token';
-import models from '@models/';
 
 const { User } = models;
 
