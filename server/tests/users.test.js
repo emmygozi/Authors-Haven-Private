@@ -1,11 +1,12 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
+import { createTestUser, generateToken } from './factory/user-factory';
 
+let userToken, authToken;
 chai.use(chaiHttp);
 const { expect } = chai;
 const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZjZDAwNDBmLTI3MDktNGU0Yi05YjU2LWYzZDk3MmRhNjk4OTg5IiwiZW1haWwiOiJqdXN0c2luZUBzbnF3c3QuY29tIiwiaWF0IjoxNTYwMjA3NTAyLCJleHAiOjE1NjAyOTM5MDJ9.FpXu8SrboezKr57MNcrEA_pGhsMRm0G5ptUGqQje12I';
-let userToken;
 
 describe('TESTS TO SIGNUP A USER', () => {
   it('should return `username is required` if username is absent ', (done) => {
@@ -260,6 +261,59 @@ describe('TESTS TO LOGIN A USER', () => {
           expect(res.statusCode).to.be.equal(401);
           expect(res.body).to.have.property('errors');
           expect(res.body.errors.global).to.be.equal('Invalid Token Provided');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+});
+
+describe('TEST TO GET ALL USERS', () => {
+  before(async () => {
+    const testUser = await createTestUser({});
+    authToken = await generateToken({ id: testUser.id });
+  });
+  it('should return all users', (done) => {
+    try {
+      chai.request(app)
+        .get('/api/v1/users')
+        .set('Authorization', `Bearer ${authToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.payload).to.be.an('array');
+          expect(res.body).to.have.property('status');
+          const returnStatus = 'success';
+          expect(res.body).to.have.property('status', returnStatus);
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+  it('should return errors if no token was provided', (done) => {
+    try {
+      chai.request(app)
+        .get('/api/v1/users')
+        .set('Authorization', '')
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body).to.have.property('errors');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+  it('should return invalid token', (done) => {
+    try {
+      chai.request(app)
+        .get('/api/v1/users')
+        .set('Authorization', authToken)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.global).to.eql('Invalid token supplied: format Bearer <token>');
           done();
         });
     } catch (err) {

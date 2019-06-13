@@ -80,6 +80,24 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "Invalid email/password supplied"
+    get:
+      tags:
+      - "users"
+      summary: "Users with profiles"
+      description: "Returns all users and their corresponding profiles"
+      operationId: "getUsers"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "fail"
+      security:
+      - api_key: []
   /auth/login:
     post:
       tags:
@@ -113,12 +131,17 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "Invalid email/password supplied"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
 definitions:
   User:
     type: "object"
     properties:
       id:
-        type: "integer"
+        type: "string"
         format: "int64"
       username:
         type: "string"
@@ -126,24 +149,37 @@ definitions:
         type: "string"
       password:
         type: "string"
-      bio:
+      firstname:
         type: "string"
-      image:
+      lastname:
         type: "string"
-      favorites:
-        type: "array"
-        items:
-          type: "string"
-      following:
+      middlename:
+        type: "string"
+      active:
+        type: boolean
+  Profile:
+    type: "object"
+    properties:
+      id:
         type: "integer"
         format: "int64"
+      userId:
+        type: "string"
+      bio:
+        type: "string"
+      avatar:
+        type: "string"
+      phone:
+        type: "string"
+      location:
+        type: "string"
   ApiResponse:
     type: "object"
     properties:
       status:
         type: "integer"
         format: "int32"
-      errors:
+      data:
         type: "object"
         items:
           type: "object"

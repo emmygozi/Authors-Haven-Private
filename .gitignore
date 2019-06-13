@@ -37,6 +37,8 @@ node_modules
 .nyc_output
 .env
 
+server/database_test.sqlite
+server/seeders/
 *.sqlite
 *.sqlite3
 dist/
