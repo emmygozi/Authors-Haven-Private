@@ -1,9 +1,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import faker from 'faker';
-import models from '@models';
 import app from '../app';
-import generateToken from './factory/user-factory';
+import { generateToken, createTestUser } from './factory/user-factory';
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -13,12 +11,8 @@ const invalidArticleId = '00000000-0000-0000-0000-000000000000';
 
 describe('TEST TO RATE AN ARTICLE', () => {
   before(async () => {
-    const newUser = await models.User.create({
-      username: faker.internet.userName(),
-      email: faker.internet.email(),
-      password: faker.internet.password()
-    });
-    userToken = `Bearer ${await generateToken({ id: newUser.id })}`;
+    const { id } = await createTestUser({});
+    userToken = `Bearer ${await generateToken({ id })}`;
   });
 
   it('should not rate article because rate is not provided in body', (done) => {
