@@ -3,7 +3,7 @@ import Response from '@helpers/Response';
 import models from '@models';
 import validateRating from '@validations/rating';
 
-const { User, Article, Rating } = models;
+const { User, Article } = models;
 
 /**
  * @exports ArticleController
