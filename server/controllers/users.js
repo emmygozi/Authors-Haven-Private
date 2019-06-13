@@ -31,6 +31,9 @@ class UserController {
         id: user.id,
         email: user.email
       };
+
+      await user.createProfile();
+
       const token = await Token.create(payload);
       return res.status(201).json({ status: 'success', message: 'User created successfully', user: userExtractor(user, token) });
     } catch (err) {
