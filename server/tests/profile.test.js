@@ -147,19 +147,19 @@ describe('TEST FOR USER PROFILE', () => {
     }
   });
 
-  it('should return some fields on user update', (done) => {
+  it('should return error for some fields on user update', (done) => {
     try {
       chai.request(app)
         .put('/api/v1/user')
         .set('Authorization', userToken)
-        .send({ firstname: 40, phoneNo: 'fgrsmdlf' })
+        .send({ firstname: 40, phone: 'fgrsmdlf' })
         .end((err, res) => {
           expect(res.statusCode).to.be.equal(400);
           expect(res.body).to.have.property('errors');
           expect(res.body.errors).to.have.property('firstname');
-          expect(res.body.errors).to.have.property('phoneNo');
+          expect(res.body.errors).to.have.property('phone');
           expect(res.body.errors.firstname).to.be.equal('firstname must be a string');
-          expect(res.body.errors.phoneNo).to.be.equal('phoneNo must be a number');
+          expect(res.body.errors.phone).to.be.equal('phone must be a number');
 
           done(err);
         });

@@ -13,7 +13,7 @@ export const validateProfileDetails = (profile) => {
       .max(510)
       .optional(),
     avatar: Joi.string().trim().optional(),
-    phoneNo: Joi.number().max(14).optional(),
+    phone: Joi.number().min(11).optional(),
     location: Joi.string().trim().optional()
   };
   return Joi.validate(profile, schema, {
