@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import models from '@models';
-import { validateLogin, validateSignup, updateDetails } from '@validations/auth';
+import { validateLogin, validateSignup } from '@validations/auth';
 import Token from '@helpers/Token';
 import userExtractor from '@helpers/userExtractor';
 import { validationResponse, validateUniqueResponse } from '@helpers/validationResponse';
@@ -95,7 +95,7 @@ class UserController {
    * @param {object} res
    * @param {object} next
    * @returns {object} res message
-   */
+   * */
   static async logout(req, res) {
     const token = await Token.getToken(req);
     try {
@@ -105,6 +105,42 @@ class UserController {
       });
     } catch (error) {
       return Response.error(res, 401, 'You are not logged in');
+    }
+  }
+
+  /**
+ * Get users and their corresponding profiles
+ * @async
+ * @param {object} req - Request object
+ * @param {object} res - Response object
+ * @param {object} next The next middleware
+ * @return {json} Returns json object
+ * @static
+ */
+  static async getUsers(req, res, next) {
+    try {
+      const users = await User.findAll({
+        attributes: ['id', 'username', 'firstname', 'lastname'],
+        where: {
+          active: true
+        },
+        include: [
+          {
+            model: models.Profile,
+            as: 'profile',
+            attributes: ['bio', 'avatar', 'location']
+          },
+        ],
+      });
+
+      return res.status(200)
+        .send({
+          status: 'success',
+          message: 'Users and corresponding profiles retrieved successfully',
+          payload: users
+        });
+    } catch (error) {
+      next(error);
     }
   }
 }

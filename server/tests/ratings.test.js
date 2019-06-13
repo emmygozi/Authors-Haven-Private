@@ -1,8 +1,8 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
-import { generateToken, createTestUser } from './factory/userFactory';
-import createTestArticle from './factory/articleFactory';
+import { generateToken, createTestUser } from './factory/user-factory';
+import createTestArticle from './factory/article-factory';
 
 chai.use(chaiHttp);
 const { expect } = chai;

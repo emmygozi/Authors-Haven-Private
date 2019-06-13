@@ -1,6 +1,6 @@
-import faker from 'faker';
 import models from '@models';
-import Token from '@helpers/Token';
+import faker from 'faker';
+import Token from '../../helpers/Token';
 
 const { User } = models;
 
@@ -16,8 +16,7 @@ const createTestUser = async ({ username, email }) => {
     email: email || faker.internet.email(),
     password: faker.internet.password()
   });
-
   return newUser;
 };
 
-export { generateToken, createTestUser };
+export { createTestUser, generateToken };
