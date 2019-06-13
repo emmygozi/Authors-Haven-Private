@@ -53,23 +53,23 @@ class ProfileController {
       const profileDetails = await validateProfileDetails(req.body);
 
       const {
-        firstname, lastname, bio, avatar, phoneNo, location
+        firstname, lastname, bio, avatar, phone, location
       } = profileDetails;
 
       const profile = await Profile.findOne({
         where: { userId: id }
       });
 
-      const updateDetails = await profile.update({
+      const updatedDetails = await profile.update({
         firstname,
         lastname,
         bio,
         avatar,
-        phoneNo,
+        phone,
         location
       });
 
-      return Response.success(res, 200, updateDetails);
+      return Response.success(res, 200, updatedDetails);
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({
