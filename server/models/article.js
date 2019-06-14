@@ -46,7 +46,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'articleId',
     });
 
-    Article.hasOne(Rating, {
+    Article.belongsToMany(User, {
+      through: Rating,
+      as: 'Ratings',
       foreignKey: 'articleId',
     });
 
@@ -59,6 +61,11 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Article.hasMany(Tag, {
+      foreignKey: 'articleId'
+    });
+
+    Article.hasMany(Rating, {
+      as: 'articleRatings',
       foreignKey: 'articleId'
     });
   };

@@ -73,9 +73,11 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'followerId',
       as: 'follower',
     });
-    User.hasMany(Article, {
+
+    User.belongsToMany(Article, {
+      through: Rating,
       foreignKey: 'userId',
-      as: 'author',
+      as: 'Ratings',
     });
 
     User.hasMany(Social, {
