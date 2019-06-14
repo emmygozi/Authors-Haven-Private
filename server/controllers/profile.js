@@ -3,7 +3,7 @@ import Response from '@helpers/Response';
 import { validateProfileDetails } from '@validations/profile';
 import { validationResponse } from '@helpers/validationResponse';
 
-const { User, Profile } = models;
+const { User } = models;
 
 /**
 * @exports ProfileController

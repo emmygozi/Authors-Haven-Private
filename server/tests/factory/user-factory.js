@@ -1,7 +1,7 @@
 import models from '@models';
 import faker from 'faker';
 import Token from '@helpers/Token';
-import { createProfileDetails, createTestProfile } from './profile-factory';
+import { createTestProfile } from './profile-factory';
 
 const { User } = models;
 

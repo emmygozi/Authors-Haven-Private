@@ -79,7 +79,6 @@ describe('TEST FOR USER PROFILE', () => {
         .set('Authorization', userToken)
         .send({ ...profileDetails })
         .end((err, res) => {
-          console.log(res.body);
           expect(res.statusCode).to.be.equal(200);
           expect(res.body).to.have.property('payload');
 
