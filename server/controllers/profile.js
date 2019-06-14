@@ -49,16 +49,13 @@ class ProfileController {
   */
   static async updateProfile(req, res, next) {
     try {
-      const { id } = req.decoded;
       const profileDetails = await validateProfileDetails(req.body);
 
       const {
         firstname, lastname, bio, avatar, phone, location
       } = profileDetails;
 
-      const profile = await Profile.findOne({
-        where: { userId: id }
-      });
+      const profile = await req.user.getProfile();
 
       const updatedDetails = await profile.update({
         firstname,

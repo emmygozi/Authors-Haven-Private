@@ -1,21 +1,22 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
-import { createTestProfile, createProfileDetails } from './factory/profileFactory';
-import { createTestUser, generateToken } from './factory/userFactory';
+import { createProfileDetails } from './factory/profile-factory';
+import { createTestUser, generateToken } from './factory/user-factory';
 
 
 chai.use(chaiHttp);
 const { expect } = chai;
 
-let userToken, profileDetails;
+let userToken, profileDetails, userName;
 
 describe('TEST FOR USER PROFILE', () => {
   before(async () => {
     // Creates a new user
-    const { id } = await createTestUser({ });
-    const { userId } = await createTestProfile(id);
-    userToken = `Bearer ${await generateToken({ id: userId })}`;
+    const user = await createTestUser({ });
+    const { id, username } = user.dataValues;
+    userName = username;
+    userToken = `Bearer ${await generateToken({ id })}`;
 
     profileDetails = await createProfileDetails({ });
   });
@@ -23,7 +24,7 @@ describe('TEST FOR USER PROFILE', () => {
   it('should return profile of valid user', (done) => {
     try {
       chai.request(app)
-        .get('/api/v1/profiles/Sanchezqwst')
+        .get(`/api/v1/profiles/${userName}`)
         .end((err, res) => {
           expect(res.statusCode).to.be.equal(200);
           expect(res.body).to.have.property('payload');
@@ -38,7 +39,7 @@ describe('TEST FOR USER PROFILE', () => {
   it('should return some properties', (done) => {
     try {
       chai.request(app)
-        .get('/api/v1/profiles/Sanchezqwst')
+        .get(`/api/v1/profiles/${userName}`)
         .end((err, res) => {
           expect(res.statusCode).to.be.equal(200);
           expect(res.body.payload).to.have.property('firstname');
@@ -74,10 +75,11 @@ describe('TEST FOR USER PROFILE', () => {
   it('should update user details successfully', (done) => {
     try {
       chai.request(app)
-        .put('/api/v1/user')
+        .put('/api/v1/users')
         .set('Authorization', userToken)
         .send({ ...profileDetails })
         .end((err, res) => {
+          console.log(res.body);
           expect(res.statusCode).to.be.equal(200);
           expect(res.body).to.have.property('payload');
 
@@ -91,7 +93,7 @@ describe('TEST FOR USER PROFILE', () => {
   it('should return some fields on user update', (done) => {
     try {
       chai.request(app)
-        .put('/api/v1/user')
+        .put('/api/v1/users')
         .set('Authorization', userToken)
         .send({ ...profileDetails })
         .end((err, res) => {
@@ -113,7 +115,7 @@ describe('TEST FOR USER PROFILE', () => {
   it('should return error with invalid user token', (done) => {
     try {
       chai.request(app)
-        .put('/api/v1/user')
+        .put('/api/v1/users')
         .set('Authorization', 'Bearer mknkhjgbjnkmb')
         .send({ ...profileDetails })
         .end((err, res) => {
@@ -132,7 +134,7 @@ describe('TEST FOR USER PROFILE', () => {
   it('should return error without token specifed', (done) => {
     try {
       chai.request(app)
-        .put('/api/v1/user')
+        .put('/api/v1/users')
         .send({ ...profileDetails })
         .end((err, res) => {
           expect(res.statusCode).to.be.equal(400);
@@ -150,7 +152,7 @@ describe('TEST FOR USER PROFILE', () => {
   it('should return error for some fields on user update', (done) => {
     try {
       chai.request(app)
-        .put('/api/v1/user')
+        .put('/api/v1/users')
         .set('Authorization', userToken)
         .send({ firstname: 40, phone: 'fgrsmdlf' })
         .end((err, res) => {

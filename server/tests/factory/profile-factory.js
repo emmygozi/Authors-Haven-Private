@@ -3,7 +3,7 @@ import models from '@models';
 
 const { Profile } = models;
 
-const createTestProfile = async (id) => {
+const createTestProfile = async ({ id }) => {
   const newProfile = await Profile.create({
     userId: id,
   });
