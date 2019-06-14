@@ -6,18 +6,6 @@ module.exports = {
       defaultValue: Sequelize.UUIDV4,
       allowNull: false
     },
-    firstname: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
-    lastname: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
-    middlename: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
     username: {
       type: Sequelize.CITEXT,
       unique: true,

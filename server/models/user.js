@@ -25,18 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true
     },
-    firstname: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    lastname: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    middlename: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
     active: {
       type: DataTypes.BOOLEAN,
       allowNull: true,

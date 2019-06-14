@@ -17,7 +17,7 @@ paths:
   /users:
     post:
       tags:
-      - "user"
+      - "Auth"
       summary: "Create user"
       description: "Creates a new user in the application"
       operationId: "createUser"
@@ -98,10 +98,84 @@ paths:
           description: "fail"
       security:
       - api_key: []
+    put:
+      tags:
+      - "Profile"
+      summary: "Update User Profile"
+      description: "Returns the Updated User Details"
+      operationId: "updateProfile"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "formData"
+        name: firstname
+        required: false
+        type: string
+        description: "first name"
+      - in: "formData"
+        name: lastname
+        required: false
+        type: string
+        description: "last name"
+      - in: "formData"
+        name: bio
+        required: false
+        type: text
+        description: "bio"
+      - in: "formData"
+        name: avatar
+        required: false
+        type: string
+        description: "Avatar URL"
+      - in: "formData"
+        name: location
+        required: false
+        type: string
+        description: "Location"
+      - in: "formData"
+        name: phone
+        required: false
+        type: integer
+        description: 'Phone Number'
+        minLength: 11
+        maxLength: 14
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Invalid token supplied: format Bearer <token>"
+        401:
+          description: "Invalid Token Provided"
+      security:
+      - api_key: []
+  /profiles/{username}:
+    get:
+      tags:
+      - "Profile"
+      summary: "User Profile details"
+      description: "Returns the profile details of a user"
+      operationId: "getProfile"
+      produces:
+      - "application/json"
+      parameters:
+        - in: path
+          name: username
+          required: false
+          type: string
+          description: "User's username"
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        404:
+          description: "fail"
   /auth/login:
     post:
       tags:
-      - "user"
+      - "Auth"
       summary: "User login"
       description: "Logs user into the system"
       operationId: "loginUser"
