@@ -98,29 +98,6 @@ paths:
           description: "fail"
       security:
       - api_key: []
-  /profiles/{username}:
-    get:
-      tags:
-      - "Profile"
-      summary: "User Profile details"
-      description: "Returns the profile details of a user"
-      operationId: "getProfile"
-      produces:
-      - "application/json"
-      parameters:
-        - in: path
-          name: username
-          required: false
-          type: string
-          description: "User's username"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        404:
-          description: "fail"
-  /user:
     put:
       tags:
       - "Profile"
@@ -173,6 +150,28 @@ paths:
           description: "Invalid Token Provided"
       security:
       - api_key: []
+  /profiles/{username}:
+    get:
+      tags:
+      - "Profile"
+      summary: "User Profile details"
+      description: "Returns the profile details of a user"
+      operationId: "getProfile"
+      produces:
+      - "application/json"
+      parameters:
+        - in: path
+          name: username
+          required: false
+          type: string
+          description: "User's username"
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        404:
+          description: "fail"
   /auth/login:
     post:
       tags:
