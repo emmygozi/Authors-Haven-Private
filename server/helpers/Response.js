@@ -23,13 +23,15 @@ class Response {
    * @static
    * @param {*} res
    * @param {*} code
+   * @param {*} message
    * @param {*} payload
    * @returns {object} object
    * @memberof Response
    */
-  static success(res, code, payload) {
+  static success(res, code, message, payload) {
     return res.status(code).json({
       status: code,
+      message,
       payload
     });
   }

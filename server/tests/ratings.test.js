@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 let userToken;
-let validArticleId;
+let validArticleSlug;
 const invalidArticleId = '00000000-0000-0000-0000-000000000000';
 
 describe('TEST TO RATE AN ARTICLE', () => {
@@ -19,7 +19,7 @@ describe('TEST TO RATE AN ARTICLE', () => {
 
     //  Create an article
     const newArticle = await createTestArticle(id, {});
-    validArticleId = newArticle.id;
+    validArticleSlug = newArticle.slug;
   });
 
   it('should not rate article because rate is not provided in body', (done) => {
@@ -123,7 +123,7 @@ describe('TEST TO RATE AN ARTICLE', () => {
   it('should create a new rating', (done) => {
     try {
       chai.request(app)
-        .post(`/api/v1/articles/${validArticleId}/rate`)
+        .post(`/api/v1/articles/${validArticleSlug}/rate`)
         .set('Authorization', userToken)
         .send({ rate: 4 })
         .end((err, res) => {
@@ -131,6 +131,7 @@ describe('TEST TO RATE AN ARTICLE', () => {
           expect(res.body.payload).to.be.an('object');
           expect(res.body.payload.article.author).to.be.an('object');
           expect(res.body.payload.article).to.be.an('object');
+          expect(res.body.message).to.equal('Article has been rated');
           expect(res.body.payload.rate).to.equal(4);
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('status', 201);
@@ -144,14 +145,15 @@ describe('TEST TO RATE AN ARTICLE', () => {
   it('should update existing rating', (done) => {
     try {
       chai.request(app)
-        .post(`/api/v1/articles/${validArticleId}/rate`)
+        .post(`/api/v1/articles/${validArticleSlug}/rate`)
         .set('Authorization', userToken)
-        .send({ validArticleId, rate: 3 })
+        .send({ rate: 3 })
         .end((err, res) => {
           expect(res.status).to.equal(200);
           expect(res.body.payload).to.be.an('object');
           expect(res.body.payload.article.author).to.be.an('object');
           expect(res.body.payload.article).to.be.an('object');
+          expect(res.body.message).to.equal('Article has been rated');
           expect(res.body.payload.rate).to.equal(3);
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('status', 200);
