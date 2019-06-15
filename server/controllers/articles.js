@@ -1,10 +1,12 @@
+import sequelize from 'sequelize';
 import { validationResponse } from '@helpers/validationResponse';
 import Response from '@helpers/Response';
 import models from '@models';
 import validateRating from '@validations/rating';
-import sequelize from 'sequelize';
 
-const { User, Article, Rating } = models;
+const {
+  User, Article, Rating, Profile
+} = models;
 
 /**
  * @exports ArticleController
@@ -35,11 +37,18 @@ class ArticleController {
 
       if (!article) return Response.error(res, 404, 'Article does not exist');
 
-      const result = await article.addRating(userId, { through: { ratings: rate } });
+      const result = await article.addRating(userId, {
+        through: { ratings: rate }
+      });
 
       const updatedArticle = await ArticleController.findArticle({ slug });
 
-      return Response.success(res, (!result || !result[0].dataValues) ? 200 : 201, 'Article has been rated', { article: updatedArticle, rate });
+      return Response.success(
+        res,
+        !result || !result[0].dataValues ? 200 : 201,
+        'Article has been rated',
+        { article: updatedArticle }
+      );
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({
@@ -52,13 +61,12 @@ class ArticleController {
   }
 
   /**
-   * Rate an article
-   * @async
-   * @param  {object} req - Request object
-   * @param {object} res - Response object
-   * @param {object} next The next middleware
-   * @return {json} Returns json object
+   *
+   *
    * @static
+   * @param {*} { articleId, slug }
+   * @returns {object} article details
+   * @memberof ArticleController
    */
   static async findArticle({ articleId, slug }) {
     const where = {};
@@ -75,7 +83,14 @@ class ArticleController {
       attributes: [
         'id',
         'slug',
-        [sequelize.fn('AVG', sequelize.col('articleRatings.ratings')), 'averageRating']
+        'title',
+        'body',
+        'createdAt',
+        'updatedAt',
+        [
+          sequelize.fn('AVG', sequelize.col('articleRatings.ratings')),
+          'averageRating'
+        ]
       ],
       include: [
         {
@@ -90,18 +105,17 @@ class ArticleController {
           attributes: [
             'id',
             'username',
-            'email',
             'firstname',
             'lastname',
-            'middlename',
-            'active'
-          ]
+          ],
+          include: [{
+            model: Profile,
+            as: 'profile',
+            attributes: ['bio', 'avatar']
+          }]
         }
       ],
-      group: [
-        'Article.id',
-        'author.id'
-      ]
+      group: ['Article.id', 'author.id', 'author->profile.id']
     });
   }
 }

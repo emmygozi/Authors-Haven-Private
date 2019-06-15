@@ -132,7 +132,6 @@ describe('TEST TO RATE AN ARTICLE', () => {
           expect(res.body.payload.article.author).to.be.an('object');
           expect(res.body.payload.article).to.be.an('object');
           expect(res.body.message).to.equal('Article has been rated');
-          expect(res.body.payload.rate).to.equal(4);
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('status', 201);
           done();
@@ -154,7 +153,6 @@ describe('TEST TO RATE AN ARTICLE', () => {
           expect(res.body.payload.article.author).to.be.an('object');
           expect(res.body.payload.article).to.be.an('object');
           expect(res.body.message).to.equal('Article has been rated');
-          expect(res.body.payload.rate).to.equal(3);
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('status', 200);
           done();
