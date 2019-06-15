@@ -14,6 +14,14 @@ module.exports = {
         key: 'id'
       }
     },
+    firstname: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    lastname: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     bio: {
       type: Sequelize.STRING,
       allowNull: true

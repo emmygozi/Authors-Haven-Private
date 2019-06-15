@@ -31,6 +31,9 @@ class UserController {
         id: user.id,
         email: user.email
       };
+
+      await user.createProfile();
+
       const token = await Token.create(payload);
       return res.status(201).json({ status: 'success', message: 'User created successfully', user: userExtractor(user, token) });
     } catch (err) {
@@ -120,7 +123,7 @@ class UserController {
   static async getUsers(req, res, next) {
     try {
       const users = await User.findAll({
-        attributes: ['id', 'username', 'firstname', 'lastname'],
+        attributes: ['id', 'username'],
         where: {
           active: true
         },
@@ -128,7 +131,7 @@ class UserController {
           {
             model: models.Profile,
             as: 'profile',
-            attributes: ['bio', 'avatar', 'location']
+            attributes: ['firstname', 'lastname', 'bio', 'avatar', 'location']
           },
         ],
       });

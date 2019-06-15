@@ -1,5 +1,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import ArticleController from '@controllers/articles';
 import app from '../app';
 import { generateToken, createTestUser } from './factory/user-factory';
 import createTestArticle from './factory/article-factory';
@@ -159,6 +160,22 @@ describe('TEST TO RATE AN ARTICLE', () => {
         });
     } catch (err) {
       throw err.message;
+    }
+  });
+
+  it('should throw error since object is empty', async (done) => {
+    try {
+      await expect(ArticleController.findArticle({ })).to.eventually.throw();
+    } catch (err) {
+      done();
+    }
+  });
+
+  it('should return an object', async (done) => {
+    try {
+      await expect(ArticleController.findArticle({ articleId: 'invalidId' })).to.be.an('object');
+    } catch (err) {
+      done();
     }
   });
 });

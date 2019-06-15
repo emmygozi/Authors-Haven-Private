@@ -46,8 +46,8 @@ class ArticleController {
       return Response.success(
         res,
         !result || !result[0].dataValues ? 200 : 201,
-        'Article has been rated',
-        { article: updatedArticle }
+        { article: updatedArticle },
+        'Article has been rated'
       );
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
@@ -104,14 +104,12 @@ class ArticleController {
           as: 'author',
           attributes: [
             'id',
-            'username',
-            'firstname',
-            'lastname',
+            'username'
           ],
           include: [{
             model: Profile,
             as: 'profile',
-            attributes: ['bio', 'avatar']
+            attributes: ['firstname', 'lastname', 'bio', 'avatar']
           }]
         }
       ],
