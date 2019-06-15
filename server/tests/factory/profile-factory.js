@@ -17,7 +17,7 @@ const createProfileDetails = async ({
   const newProfile = await {
     firstname: firstname || faker.name.firstName(),
     lastname: lastname || faker.name.lastName(),
-    bio: bio || faker.lorem.text(),
+    bio: bio || faker.lorem.sentence(),
     avatar: avatar || faker.image.imageUrl(),
     location: location || faker.address.country()
   };
