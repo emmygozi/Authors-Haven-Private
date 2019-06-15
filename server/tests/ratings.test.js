@@ -166,14 +166,16 @@ describe('TEST TO RATE AN ARTICLE', () => {
   it('should throw error since object is empty', async (done) => {
     try {
       await expect(ArticleController.findArticle({ })).to.eventually.throw();
+      done();
     } catch (err) {
       done();
     }
   });
 
-  it('should return an object', async (done) => {
+  it('should throw error since articleId does not exist', async (done) => {
     try {
       await expect(ArticleController.findArticle({ articleId: 'invalidId' })).to.be.an('object');
+      done();
     } catch (err) {
       done();
     }
