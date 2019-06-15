@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "pretest": "rm -rf ./server/database_test.sqlite3 && NODE_ENV=test npm run refreshdb",
-    "test": "NODE_ENV=test nyc --reporter=html --reporter=text --require @babel/register --env=test mocha --timeout 10000 ./server/tests/*.js --exit"
+    "test": "NODE_ENV=test nyc --reporter=html --reporter=text --require @babel/register --env=test mocha --timeout 10000 ./server/tests/*.test.js --exit"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -37,6 +37,7 @@
     "debug": "^4.1.1",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
+    "faker": "^4.1.0",
     "history": "^4.7.2",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
@@ -46,7 +47,7 @@
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^5.8.6",
-    "sequelize-cli": "^5.4.0",
+    "sequelize-cli": "^5.5.0",
     "sinon": "^7.3.2",
     "sqlite3": "^4.0.8",
     "swagger-jsdoc": "^3.2.9",
