@@ -20,7 +20,7 @@ const createTestUser = async ({
     password: password || faker.internet.password()
   });
 
-  await createProfileWithDetails(newUser);
+  await createProfileWithDetails(newUser, {});
 
   return newUser;
 };
