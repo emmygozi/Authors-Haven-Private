@@ -17,19 +17,5 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
 
-  Rating.associate = (models) => {
-    const { User, Article } = models;
-
-    Rating.belongsTo(User, {
-      foreignKey: 'userId',
-      as: 'user'
-    });
-
-    Rating.belongsTo(Article, {
-      foreignKey: 'articleId',
-      as: 'article',
-    });
-  };
-
   return Rating;
 };

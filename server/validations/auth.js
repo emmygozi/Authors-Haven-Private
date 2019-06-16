@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import validateSchema from '../helpers/validateSchema';
 
 export const validateLogin = (user) => {
   const schema = {
@@ -9,13 +10,8 @@ export const validateLogin = (user) => {
     password: Joi.string().trim().min(5).max(255)
       .required()
   };
-  return Joi.validate(user, schema, {
-    language: {
-      key: '{{key}} '
-    },
-    abortEarly: false,
-    stripUnknown: true
-  });
+
+  return validateSchema(user, schema);
 };
 
 export const validateSignup = (user) => {
@@ -31,11 +27,6 @@ export const validateSignup = (user) => {
     password: Joi.string().trim().min(5).max(255)
       .required()
   };
-  return Joi.validate(user, schema, {
-    language: {
-      key: '{{key}} '
-    },
-    abortEarly: false,
-    stripUnknown: true
-  });
+
+  return validateSchema(user, schema);
 };
