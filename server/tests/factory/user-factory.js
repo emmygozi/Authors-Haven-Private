@@ -1,9 +1,9 @@
 import models from '@models';
 import faker from 'faker';
 import Token from '@helpers/Token';
-import { createTestProfile } from './profile-factory';
+import { createTestProfile, createProfileWithDetails } from './profile-factory';
 
-const { User, Profile } = models;
+const { User } = models;
 
 const generateToken = async (userDetails) => {
   const token = await Token.create(userDetails);
@@ -11,23 +11,16 @@ const generateToken = async (userDetails) => {
 };
 
 const createTestUser = async ({
-  username, email, firstname, lastname, bio, avatar, location
+  username, email, password
 }) => {
   const newUser = await User.create({
     id: faker.random.uuid(),
     username: username || faker.internet.userName(),
     email: email || faker.internet.email(),
-    password: faker.internet.password()
+    password: password || faker.internet.password()
   });
-  console.log(newUser);
-  await Profile.create({
-    userId: newUser.dataValues.id,
-    firstname: firstname || faker.name.firstName(),
-    lastname: lastname || faker.name.lastName(),
-    bio: bio || faker.lorem.sentence(),
-    avatar: avatar || faker.image.imageUrl(),
-    location: location || faker.address.country()
-  });
+
+  await createProfileWithDetails(newUser);
 
   return newUser;
 };
@@ -39,6 +32,7 @@ const createTestUserWithoutProfile = async ({ username, email }) => {
     email: email || faker.internet.email(),
     password: faker.internet.password()
   });
+
   await createTestProfile(newUser);
   return newUser;
 };

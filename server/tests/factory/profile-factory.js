@@ -11,6 +11,21 @@ const createTestProfile = async ({ id }) => {
   return newProfile;
 };
 
+const createProfileWithDetails = async ({ id }, {
+  firstname, lastname, bio, avatar, location
+}) => {
+  const newProfile = await Profile.create({
+    userId: id,
+    firstname: firstname || faker.name.firstName(),
+    lastname: lastname || faker.name.lastName(),
+    bio: bio || faker.lorem.sentence(),
+    avatar: avatar || faker.image.imageUrl(),
+    location: location || faker.address.country()
+  });
+
+  return newProfile;
+};
+
 const createProfileDetails = async ({
   firstname, lastname, bio, avatar, location
 }) => {
@@ -25,4 +40,4 @@ const createProfileDetails = async ({
   return newProfile;
 };
 
-export { createTestProfile, createProfileDetails };
+export { createTestProfile, createProfileDetails, createProfileWithDetails };
