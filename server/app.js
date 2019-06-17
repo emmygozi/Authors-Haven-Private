@@ -22,7 +22,6 @@ app.use(bodyParser.urlencoded({
 
 app.use('/api/v1', apis);
 
-
 // swagger-ui-express for API endpoint documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use((request, response, next) => {

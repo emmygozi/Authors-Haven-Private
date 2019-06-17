@@ -1,0 +1,20 @@
+import faker from 'faker';
+import models from '@models/';
+
+const { Article } = models;
+
+const createTestArticle = async (userId, { title, body }) => {
+  const newArticle = await Article.create({
+    id: faker.random.uuid(),
+    userId,
+    slug: faker.lorem.slug(),
+    title: title || faker.lorem.words(),
+    body: body || faker.lorem.sentences(),
+    image: faker.image.imageUrl(),
+    readTime: '4 mins'
+  });
+
+  return newArticle;
+};
+
+export default createTestArticle;

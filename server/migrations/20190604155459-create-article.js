@@ -27,6 +27,10 @@ module.exports = {
       type: Sequelize.TEXT,
       allowNull: false
     },
+    image: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
     readTime: {
       type: Sequelize.STRING,
       allowNull: false
