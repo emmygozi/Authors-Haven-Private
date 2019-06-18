@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false
     },
-    resetPasswordoken: {
+    resetPasswordToken: {
       type: DataTypes.STRING,
       allowNull: true,
     },

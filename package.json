@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "pretest": "rm -rf ./server/database_test.sqlite3 && NODE_ENV=test npm run refreshdb",
-    "test": "NODE_ENV=test nyc --reporter=html --reporter=text --require @babel/register --env=test mocha --timeout 10000 ./server/tests/*.test.js --exit"
+    "test": "NODE_ENV=test nyc --reporter=html --reporter=text --require @babel/register --env=test mocha --timeout 10000 ./server/tests/**/*.test.js --exit"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
