@@ -15,9 +15,10 @@ const createTestUser = async ({
 }) => {
   const newUser = await User.create({
     id: faker.random.uuid(),
-    username: username || faker.internet.userName(),
+    username: username || faker.random.alphaNumeric(6),
     email: email || faker.internet.email(),
-    password: password || faker.internet.password()
+    password: password || faker.internet.password(),
+    active: true
   });
 
   await createProfileWithDetails(newUser, {});

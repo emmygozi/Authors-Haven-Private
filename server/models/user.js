@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = (models) => {
     const {
-      Follower, Article, Profile, Social, ReportArticle, Rating, PasswordReset,
+      Article, Profile, Social, ReportArticle, Rating, PasswordReset,
       ArticleLike, CommentLike, Role
     } = models;
 
@@ -52,14 +52,20 @@ module.exports = (sequelize, DataTypes) => {
       as: 'profile'
     });
 
-    User.hasMany(Follower, {
-      foreignKey: 'followingId',
-      as: 'following',
+    User.belongsToMany(User, {
+      foreignKey: 'followerId',
+      otherKey: 'userId',
+      through: 'UserFollowers',
+      as: 'followed',
+      timestamps: false,
     });
 
-    User.hasMany(Follower, {
-      foreignKey: 'followerId',
-      as: 'follower',
+    User.belongsToMany(User, {
+      foreignKey: 'userId',
+      otherKey: 'followerId',
+      through: 'UserFollowers',
+      as: 'followers',
+      timestamps: false,
     });
 
     User.hasMany(Article, {
@@ -105,7 +111,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId'
     });
   };
-
   User.hashPassword = async (user) => {
     const hash = await bcrypt.hash(user.dataValues.password, SALT_ROUNDS);
     await user.setDataValue('password', hash);

@@ -6,7 +6,9 @@ import userExtractor from '@helpers/userExtractor';
 import { validationResponse, validateUniqueResponse } from '@helpers/validationResponse';
 import Response from '@helpers/Response';
 
-const { User, DroppedToken } = models;
+const {
+  User, DroppedToken
+} = models;
 
 /**
  * @exports UserController
@@ -95,12 +97,14 @@ class UserController {
   }
 
   /**
-   * Signuout user and blacklist tokens
-   * @param {object} req
-   * @param {object} res
-   * @param {object} next
-   * @returns {object} res message
-   * */
+ * Signuout user and blacklist tokens
+ *
+ * @static
+ * @param {*} req
+ * @param {*} res
+ * @returns {json} returns json object
+ * @memberof UserController logout
+ */
   static async logout(req, res) {
     const token = await Token.getToken(req);
     try {

@@ -77,6 +77,91 @@ class ProfileController {
       next(err);
     }
   }
+
+  /**
+   * Users can follow each ither
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   * @returns {object} res message
+   */
+  static async follow(req, res, next) {
+    try {
+      const { username } = req.params;
+      const { id } = req.decoded;
+      const me = req.user;
+
+      const userToFollow = await User.findOne({
+        where: {
+          username,
+          active: true
+        }
+      });
+
+      if (!userToFollow) {
+        return Response.error(res, 404, 'User to follow not found');
+      }
+      const userToFollowId = userToFollow.id;
+      if (userToFollowId === id) {
+        return Response.error(res, 400, 'you cannot follow yourself');
+      }
+
+      await userToFollow.addFollowers(me);
+      const myProfile = await me.getProfile();
+
+      return res.status(201).json({
+        status: 201,
+        message: 'User followed successfully',
+        payload: myProfile || {},
+      });
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  /**
+   * Users should be able to unfollow each other
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   * @memberof UserController
+   * @return {json} Returns json object
+   */
+  static async unfollow(req, res, next) {
+    try {
+      const { username } = req.params;
+      const { id } = req.decoded;
+      const me = req.user;
+
+      const userToUnfollow = await User.findOne({
+        where: {
+          username,
+          active: true
+        }
+      });
+      if (!userToUnfollow) {
+        return Response.error(res, 404, 'User to unfollow not found');
+      }
+      const unfollowid = userToUnfollow.id;
+      if (unfollowid === id) {
+        return Response.error(res, 400, 'you cannot unfollow yourself');
+      }
+
+      await userToUnfollow.removeFollowers(me);
+
+      const myProfile = await me.getProfile();
+
+      return res.status(200).json({
+        status: 200,
+        message: 'User unfollowed successfully',
+        payload: myProfile || {},
+      });
+    } catch (err) {
+      return next(err);
+    }
+  }
 }
 
 export default ProfileController;
