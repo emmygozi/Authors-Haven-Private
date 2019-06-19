@@ -10,6 +10,8 @@ basePath: "/api/v1"
 tags:
 - name: "user"
   description: "User operations"
+- name: "profile"
+  description: "User profile operations"
 - name: "articles"
   description: "Articles operations"
 schemes:
@@ -155,7 +157,7 @@ paths:
   /profiles/{username}:
     get:
       tags:
-      - "Profile"
+      - "profile"
       summary: "User Profile details"
       description: "Returns the profile details of a user"
       operationId: "getProfile"
@@ -210,7 +212,7 @@ paths:
   /articles:
     post:
       tags:
-      - "article"
+      - "articles"
       summary: "Create article"
       description: "Creates a new article in the application"
       operationId: "createArticle"
@@ -250,7 +252,7 @@ paths:
       - api_key: []
     get:
       tags:
-      - "article"
+      - "articles"
       summary: "user can get all articles"
       description: "Returns all available articles"
       operationId: "getArticles"
@@ -264,67 +266,11 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "fail"
-    delete:
-      tags:
-      - "article"
-      summary: "user can delete an articles"
-      description: "Deletes an article in application"
-      operationId: "deleteArticles"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        400:
-          description: "fail"
-      security:
-      - api_key: []
-    put:
-      tags:
-      - "article"
-      summary: "Update article"
-      description: "Updates an article in the application"
-      operationId: "updateArticle"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "formData"
-        name: "title"
-        description: "The article title"
-        required: true
-        type: "string"
-        format: "text"
-        minLength: 4
-        maxLength: 500
-      - in: "formData"
-        name: "body"
-        description: "The article body"
-        required: true
-        type: "string"
-        format: "text"
-        minLength: 4
-      - in: "formData"
-        name: "image"
-        description: "The image url"
-        required: false
-        type: "string"
-        format: "text"
-      responses:
-        200:
-          description: "Article updated successfully"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        400:
-          description: "Title/ body is not allowed to be empty"
   /articles/{slug}:
     get:
       tags:
-      - "article"
-      summary: "user can get all articles"
+      - "articles"
+      summary: "User can get all articles"
       description: "Returns all available articles"
       operationId: "getArticles"
       produces:
@@ -339,8 +285,8 @@ paths:
           description: "fail"
     delete:
       tags:
-      - "article"
-      summary: "user can delete an articles"
+      - "articles"
+      summary: "User can delete an articles"
       description: "Deletes an article in application"
       operationId: "deleteArticles"
       produces:
@@ -357,7 +303,7 @@ paths:
       - api_key: []
     put:
       tags:
-      - "article"
+      - "articles"
       summary: "Update article"
       description: "Updates an article in the application"
       operationId: "updateArticle"
@@ -396,7 +342,7 @@ paths:
   /articles/{slug}/rate:
     post:
       tags:
-      - "article"
+      - "articles"
       summary: "Rate Article"
       description: "Rates an article"
       operationId: "rateArticle"
@@ -426,6 +372,136 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "Invalid rating supplied"
+        404:
+          description: "Article does not exist"
+      security:
+      - api_key: []
+  /articles/{slug}/comment:
+    post:
+      tags:
+      - "articles"
+      summary: "Comment On Article"
+      description: "Leaves a comment on an article"
+      operationId: "create"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slug"
+        in: "path"
+        description: "Slug of the article to comment on"
+        required: true
+        type: "string"
+        format: "slug"
+      - name: "comment"
+        in: "formData"
+        description: "Comment you are giving the article"
+        required: true
+        type: "string"
+        format: "text"
+      responses:
+        201:
+          description: "Comment added successfully."
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Bad Request"
+        404:
+          description: "Article does not exist"
+      security:
+      - api_key: []
+    get:
+      tags:
+      - "articles"
+      summary: "Get comments"
+      description: "Gets comments left on an article"
+      operationId: "getComments"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slug"
+        in: "path"
+        description: "Slug of the article to retrieve comments"
+        required: true
+        type: "string"
+        format: "slug"
+      responses:
+        200:
+          description: "Comments retrieved successfully."
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Bad Request"
+        404:
+          description: "Article does not exist"
+      security:
+      - api_key: []
+  /articles/{slug}/comment/{id}:
+    put:
+      tags:
+      - "articles"
+      summary: "Update Comment"
+      description: "Updates a comment on an article"
+      operationId: "updateComment"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slug"
+        in: "path"
+        description: "Id of the article to update comment"
+        required: true
+        type: "string"
+        format: "text"
+      - name: "id"
+        in: "path"
+        description: "Id of the comment to be updated"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "comment"
+        in: "formData"
+        description: "Comment you are updating"
+        required: true
+        type: "string"
+        format: "text"
+      responses:
+        200:
+          description: "Comment updated successfully."
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Bad Request"
+        404:
+          description: "Article does not exist"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "articles"
+      summary: "Delete Comment"
+      description: "Deletes a comment from an article"
+      operationId: "deleteComment"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slug"
+        in: "path"
+        description: "Id of the article to delete comment"
+        required: true
+        type: "string"
+        format: "text"
+      - name: "id"
+        in: "path"
+        description: "Id of the comment to be deleted"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Comment deleted successfully."
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Bad Request"
         404:
           description: "Article does not exist"
       security:
@@ -462,7 +538,7 @@ definitions:
       id:
         type: "integer"
         format: "int64"
-  Article:
+  Articles:
     type: "object"
     properties:
       id:

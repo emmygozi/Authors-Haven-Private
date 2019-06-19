@@ -3,7 +3,7 @@ import chaiHttp from 'chai-http';
 import ArticleController from '@controllers/articles';
 import app from '../app';
 import { generateToken, createTestUser } from './factory/user-factory';
-import createTestArticle from './factory/article-factory';
+import createTestArticle from './factory/articles-factory';
 
 chai.use(chaiHttp);
 const { expect } = chai;

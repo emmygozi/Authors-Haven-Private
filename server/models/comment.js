@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     Comment.belongsTo(User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
+      as: 'author'
     });
 
     Comment.hasMany(CommentLike, {
