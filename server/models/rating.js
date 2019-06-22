@@ -17,5 +17,14 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
 
+  Rating.associate = (models) => {
+    const { User } = models;
+
+    Rating.belongsTo(User, {
+      as: 'rater',
+      foreignKey: 'userId',
+    });
+  };
+
   return Rating;
 };

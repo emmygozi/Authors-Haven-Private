@@ -8,7 +8,6 @@ import commentFinder from '@middlewares/commentFinder';
 
 const articlesRouter = express.Router();
 
-articlesRouter.post('/:slug/rate', trim, Token.authorize, ArticleController.rate);
 articlesRouter.post('/:slug/comments', Token.authorize, trim, articleFinder, CommentController.create);
 articlesRouter.get('/:slug/comments', Token.authorize, articleFinder, CommentController.getComments);
 articlesRouter.put('/:slug/comments/:id', Token.authorize, trim, commentFinder, CommentController.updateComment);
@@ -19,5 +18,8 @@ articlesRouter.get('/:slug', ArticleController.getOne);
 articlesRouter.post('/', Token.authorize, ArticleController.create);
 articlesRouter.put('/:slug', Token.authorize, ArticleController.update);
 articlesRouter.delete('/:slug', Token.authorize, ArticleController.delete);
+
+articlesRouter.get('/:slug/rate', ArticleController.getArticleRatings);
+articlesRouter.post('/:slug/rate', trim, Token.authorize, ArticleController.rate);
 
 export default articlesRouter;

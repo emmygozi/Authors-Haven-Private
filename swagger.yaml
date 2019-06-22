@@ -8,9 +8,11 @@ info:
     url: "https://www.apache.org/licenses/LICENSE-2.0.html"
 basePath: "/api/v1"
 tags:
-- name: "user"
+- name: "users"
   description: "User operations"
-- name: "profile"
+- name: "auth"
+  description: "Authentication operations"
+- name: "profiles"
   description: "User profile operations"
 - name: "articles"
   description: "Articles operations"
@@ -21,7 +23,7 @@ paths:
   /users:
     post:
       tags:
-      - "Auth"
+      - "users"
       summary: "Create user"
       description: "Creates a new user in the application"
       operationId: "createUser"
@@ -53,30 +55,6 @@ paths:
         format: "password"
         minLength: 5
         maxLength: 255
-      - in: "formData"
-        name: "firstname"
-        description: "First name of user"
-        required: false
-        type: "string"
-        format: "text"
-        minLength: 2
-        maxLength: 100
-      - in: "formData"
-        name: "lastname"
-        description: "Last name of user"
-        required: false
-        type: "string"
-        format: "text"
-        minLength: 2
-        maxLength: 100
-      - in: "formData"
-        name: "middlename"
-        description: "Middle name of user"
-        required: false
-        type: "string"
-        format: "text"
-        minLength: 2
-        maxLength: 100
       responses:
         201:
           description: "User created successfully"
@@ -104,7 +82,7 @@ paths:
       - api_key: []
     put:
       tags:
-      - "Profile"
+      - "profiles"
       summary: "Update User Profile"
       description: "Returns the Updated User Details"
       operationId: "updateProfile"
@@ -154,32 +132,10 @@ paths:
           description: "Invalid Token Provided"
       security:
       - api_key: []
-  /profiles/{username}:
-    get:
-      tags:
-      - "profile"
-      summary: "User Profile details"
-      description: "Returns the profile details of a user"
-      operationId: "getProfile"
-      produces:
-      - "application/json"
-      parameters:
-        - in: path
-          name: username
-          required: false
-          type: string
-          description: "User's username"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        404:
-          description: "fail"
   /auth/login:
     post:
       tags:
-      - "Auth"
+      - "auth"
       summary: "User login"
       description: "Logs user into the system"
       operationId: "loginUser"
@@ -209,6 +165,28 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "Invalid email/password supplied"
+  /profiles/{username}:
+    get:
+      tags:
+      - "profiles"
+      summary: "User Profile details"
+      description: "Returns the profile details of a user"
+      operationId: "getProfile"
+      produces:
+      - "application/json"
+      parameters:
+        - in: path
+          name: username
+          required: false
+          type: string
+          description: "User's username"
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        404:
+          description: "fail"
   /articles:
     post:
       tags:
@@ -253,7 +231,7 @@ paths:
     get:
       tags:
       - "articles"
-      summary: "user can get all articles"
+      summary: "User can get all articles"
       description: "Returns all available articles"
       operationId: "getArticles"
       produces:
@@ -272,10 +250,16 @@ paths:
       - "articles"
       summary: "User can get all articles"
       description: "Returns all available articles"
-      operationId: "getArticles"
+      operationId: "getArticle"
       produces:
       - "application/json"
-      parameters: []
+      parameters:
+      - name: "slug"
+        in: "path"
+        description: "Slug of the article to retrieve comments"
+        required: true
+        type: "string"
+        format: "slug"
       responses:
         200:
           description: "success"
@@ -376,7 +360,29 @@ paths:
           description: "Article does not exist"
       security:
       - api_key: []
-  /articles/{slug}/comment:
+    get:
+      tags:
+      - "articles"
+      summary: "Get ratings"
+      description: "Get all article ratings"
+      operationId: "getArticleRatings"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slug"
+        in: "path"
+        description: "Slug of the article to be get ratings"
+        required: true
+        type: "string"
+        format: "slug"
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "fail"
+  /articles/{slug}/comments:
     post:
       tags:
       - "articles"
@@ -435,7 +441,7 @@ paths:
           description: "Article does not exist"
       security:
       - api_key: []
-  /articles/{slug}/comment/{id}:
+  /articles/{slug}/comments/{id}:
     put:
       tags:
       - "articles"
@@ -524,12 +530,6 @@ definitions:
         type: "string"
       password:
         type: "string"
-      firstname:
-        type: "string"
-      lastname:
-        type: "string"
-      middlename:
-        type: "string"
       active:
         type: boolean
   Profile:
@@ -538,6 +538,22 @@ definitions:
       id:
         type: "integer"
         format: "int64"
+      userId:
+        type: "integer"
+        format: "int64"
+      firstname:
+        type: "string"
+      lastname:
+        type: "string"
+      bio:
+        type: "string"
+      avatar:
+        type: "string"
+      phone:
+        type: "integer"
+        format: "int64"
+      location:
+        type: "string"
   Articles:
     type: "object"
     properties:
@@ -573,6 +589,21 @@ definitions:
         format: "uuid"
       ratings:
         type: "integer"
+  PasswordReset:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      userId:
+        type: "string"
+        format: "uuid"
+      resetPasswordToken:
+        type: "string"
+        format: "text"
+      resetPasswordExpiry:
+        type: "string"
+        format: "date-time"
   ApiResponse:
     type: "object"
     properties:

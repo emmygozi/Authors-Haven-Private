@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { validateArticle } from '@validations/auth';
-import { validateRatings } from '@validations/rating';
+import validateRatings from '@validations/rating';
 import { findAllArticle } from '@helpers/articlePayload';
 import ArticleController from '@controllers/articles';
 
@@ -61,6 +61,12 @@ describe('ArticleController', () => {
 
     const next = sinon.spy();
     await ArticleController.getAll({}, {}, next);
+    sinon.assert.calledOnce(next);
+  });
+
+  it('should handle error for getting all ratings', async () => {
+    const next = sinon.spy();
+    await ArticleController.getArticleRatings({}, {}, next);
     sinon.assert.calledOnce(next);
   });
 });

@@ -225,12 +225,9 @@ describe('TESTS TO GET ARTICLES', () => {
       chai.request(app)
         .get('/api/v1/articles')
         .end((err, res) => {
-          const returnStatus = 'success';
           expect(res.status).to.equal(200);
-          expect(res.body.payload).to.be.an('array');
           expect(res.body).to.have.property('status');
-          expect(res.body.status).to.eql(returnStatus);
-          expect(res.body).to.have.property('status', returnStatus);
+          expect(res.body.payload.rows).to.be.an('array');
           expect(res.body).to.have.property('status');
           done();
         });
@@ -239,7 +236,45 @@ describe('TESTS TO GET ARTICLES', () => {
     }
   });
 
-  it('should return an artcle does not exist', (done) => {
+  it('should get all article paginated', (done) => {
+    try {
+      chai.request(app)
+        .get('/api/v1/articles?page=1&limit=2')
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.have.property('status');
+          expect(res.body.payload.rows).to.be.an('array');
+          expect(res.body.payload).to.have.property('metadata');
+          expect(res.body.payload.metadata).to.have.property('pages');
+          expect(res.body.payload.metadata).to.have.property('totalItems');
+
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should get all article paginated with extra query', (done) => {
+    try {
+      chai.request(app)
+        .get('/api/v1/articles?page=1&limit=2&search=name')
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.have.property('status');
+          expect(res.body.payload.rows).to.be.an('array');
+          expect(res.body.payload).to.have.property('metadata');
+          expect(res.body.payload.metadata).to.have.property('pages');
+          expect(res.body.payload.metadata).to.have.property('totalItems');
+
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return an article does not exist', (done) => {
     try {
       chai.request(app)
         .get(`/api/v1/articles/${newArticle.title}`)

@@ -28,4 +28,17 @@ describe('ProfileController', () => {
     await ProfileController.getProfile({}, {}, next);
     sinon.assert.calledOnce(next);
   });
+
+
+  it('should handle no user to follow', async () => {
+    const next = sinon.spy();
+    await ProfileController.follow({}, {}, next);
+    sinon.assert.calledOnce(next);
+  });
+
+  it('should handle no user to unfollow', async () => {
+    const next = sinon.spy();
+    await ProfileController.unfollow({}, {}, next);
+    sinon.assert.calledOnce(next);
+  });
 });
