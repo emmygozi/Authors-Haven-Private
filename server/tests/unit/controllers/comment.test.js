@@ -83,6 +83,20 @@ describe('CommentController', () => {
     await CommentController.deleteComment({}, {}, next);
     sinon.assert.calledOnce(next);
   });
+
+  it('should handle error on liking a comment', async () => {
+    const next = sinon.spy();
+
+    await CommentController.likeComment({}, {}, next);
+    sinon.assert.calledOnce(next);
+  });
+
+  it('should handle error on unliking a comment', async () => {
+    const next = sinon.spy();
+
+    await CommentController.unlikeComment({}, {}, next);
+    sinon.assert.calledOnce(next);
+  });
 });
 
 describe('UserController', () => {

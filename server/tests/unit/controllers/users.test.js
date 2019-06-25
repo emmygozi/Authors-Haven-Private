@@ -33,6 +33,17 @@ describe('UsersController', () => {
     sinon.assert.calledOnce(next);
   });
 
+  it('should log users out', async () => {
+    const jsonFunc = sinon.spy();
+    const res = {
+      status: () => ({
+        json: jsonFunc
+      })
+    };
+    await UsersController.logout({}, res);
+    sinon.assert.calledOnce(jsonFunc);
+  });
+
 
   it('should handle get users', async () => {
     const next = sinon.spy();

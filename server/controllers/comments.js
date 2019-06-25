@@ -1,6 +1,6 @@
 import models from '@models';
 import validateComment from '@validations/comment';
-import comments from '@helpers/comments';
+import { comments, singleComment } from '@helpers/comments';
 import { validationResponse } from '@helpers/validationResponse';
 
 const { Comment } = models;
@@ -145,6 +145,66 @@ class CommentController {
       return res.status(200).json({
         status: 200,
         message: 'Comment deleted successfully.',
+        payload
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Like a comment
+   * @static
+   * @param {object} req - The Request Object
+   * @param {object} res - The Response Object
+   * @param {object} next - The Next Middleware
+   * @return {json} - Returns json Object
+   * @memberof CommentController
+   * @static
+   */
+  static async likeComment(req, res, next) {
+    try {
+      const userId = req.decoded.id;
+      const { comment } = req;
+      const { id } = comment;
+
+      await comment.addLike(userId, id);
+
+      const payload = await singleComment(id);
+
+      return res.status(200).json({
+        status: 200,
+        message: 'Comment liked successfully.',
+        payload
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Unlike a comment
+   * @static
+   * @param {object} req - The Request Object
+   * @param {object} res - The Response Object
+   * @param {object} next - The Next Middleware
+   * @return {json} - Returns json Object
+   * @memberof CommentController
+   * @static
+   */
+  static async unlikeComment(req, res, next) {
+    try {
+      const userId = req.decoded.id;
+      const { comment } = req;
+      const { id } = comment;
+
+      await comment.removeLike(userId, id);
+
+      const payload = await singleComment(id);
+
+      return res.status(200).json({
+        status: 200,
+        message: 'Comment unliked successfully.',
         payload
       });
     } catch (error) {

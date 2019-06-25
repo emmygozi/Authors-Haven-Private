@@ -29,7 +29,13 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Comment.hasMany(CommentLike, {
-      foreignKey: 'commentId'
+      foreignKey: 'commentId',
+    });
+
+    Comment.belongsToMany(User, {
+      through: CommentLike,
+      foreignKey: 'commentId',
+      as: 'Like'
     });
   };
 

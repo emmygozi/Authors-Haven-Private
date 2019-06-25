@@ -453,7 +453,7 @@ paths:
       parameters:
       - name: "slug"
         in: "path"
-        description: "Id of the article to update comment"
+        description: "Slug of the article to update comment"
         required: true
         type: "string"
         format: "text"
@@ -510,6 +510,71 @@ paths:
           description: "Bad Request"
         404:
           description: "Article does not exist"
+      security:
+      - api_key: []
+  /articles/{slug}/comments/{id}/like:
+    post:
+      tags:
+      - "articles"
+      summary: "Like Comment"
+      description: "Likes a comment"
+      operationId: "likeComment"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slug"
+        in: "path"
+        description: "Slug of the article with the comment"
+        required: true
+        type: "string"
+        format: "text"
+      - name: "id"
+        in: "path"
+        description: "Id of the comment to be liked"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Comment liked successfully."
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Bad Request"
+        404:
+          description: "Comment does not exist"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "articles"
+      summary: "Unlike Comment"
+      description: "Unlikes a comment"
+      operationId: "unlikeComment"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slug"
+        in: "path"
+        description: "Slug of the article to unlike comment"
+        required: true
+        type: "string"
+        format: "text"
+      - name: "id"
+        in: "path"
+        description: "Id of the comment to be unliked"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Comment unliked successfully."
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Bad Request"
+        404:
+          description: "Comment does not exist"
       security:
       - api_key: []
 securityDefinitions:

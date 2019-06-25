@@ -312,3 +312,50 @@ describe('TESTS TO DELETE A COMMENT', () => {
     }
   });
 });
+
+describe('TESTS TO LIKE A COMMENT', () => {
+  before(async () => {
+    const testUser = await createTestUser({});
+    const { id } = testUser;
+    userToken = await generateToken({ id });
+
+    testArticle = await createTestArticle(id, {});
+    const { slug } = testArticle;
+    testSlug = slug;
+
+    testComment = await createTestComment({}, id, testArticle.id);
+  });
+  it('should return `Comment liked successfully.` ', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${testSlug}/comments/${testComment.id}/like`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.have.property('payload');
+          expect(res.body.payload).to.be.an('object');
+          expect(res.body.message).to.eql('Comment liked successfully.');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return `Comment unliked successfully.` ', (done) => {
+    try {
+      chai.request(app)
+        .delete(`/api/v1/articles/${testSlug}/comments/${testComment.id}/like`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.have.property('payload');
+          expect(res.body.payload).to.be.an('object');
+          expect(res.body.message).to.eql('Comment unliked successfully.');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+});

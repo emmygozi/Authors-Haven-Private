@@ -106,8 +106,8 @@ class UserController {
  * @memberof UserController logout
  */
   static async logout(req, res) {
-    const token = await Token.getToken(req);
     try {
+      const token = await Token.getToken(req);
       await DroppedToken.create({ token });
       return res.status(201).json({
         status: 201, message: 'You are now logged out'
