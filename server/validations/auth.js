@@ -31,29 +31,27 @@ export const validateSignup = (user) => {
   return validateSchema(user, schema);
 };
 
-export const updateDetails = (user) => {
+export const validatePasswordReset = (resetDetails) => {
   const schema = {
-    username: Joi.string().trim().lowercase().min(4)
-      .max(100)
-      .optional()
-      .alphanum(),
+    password: Joi.string().trim().min(5).max(255)
+      .required(),
+    confirmPassword: Joi
+      .valid(Joi.ref('password')).error(() => 'Passwords do not match')
+      .required()
+  };
+
+  return validateSchema(resetDetails, schema);
+};
+
+export const validateForgotPassword = (user) => {
+  const schema = {
     email: Joi.string().trim().lowercase().min(5)
       .max(255)
       .email()
-      .optional(),
-    bio: Joi.string().trim().min(5).max(500)
-      .optional(),
-    image: Joi.string().trim().optional(),
-    password: Joi.string().trim().min(5).max(255)
-      .optional()
+      .required()
   };
-  return Joi.validate(user, schema, {
-    language: {
-      key: '{{key}} '
-    },
-    abortEarly: false,
-    stripUnknown: true
-  });
+
+  return validateSchema(user, schema);
 };
 
 export const validateArticle = (article) => {

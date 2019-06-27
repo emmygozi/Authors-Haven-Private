@@ -10,8 +10,8 @@ let firstUserToken, secondUserToken, firstUsername, secondUsername;
 
 describe('TESTS TO FOLLOW A USER', () => {
   before(async () => {
-    const user1 = await createTestUser({});
-    const user2 = await createTestUser({});
+    const user1 = await createTestUser({ });
+    const user2 = await createTestUser({ });
     firstUserToken = await generateToken({ id: user1.id });
     secondUserToken = await generateToken({ id: user2.id });
     firstUsername = user1.dataValues.username;

@@ -165,6 +165,88 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "Invalid email/password supplied"
+  /auth/forgot_password:
+    post:
+      tags:
+      - "auth"
+      summary: "Forgot Password"
+      description: "Send reset token to user email"
+      operationId: "forgotPasswordId"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "formData"
+        description: "The email to reset password"
+        required: true
+        type: "string"
+        format: "email"
+        minLength: 5
+        maxLength: 255
+      responses:
+        200:
+          description: "Reset email sent"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Invalid email supplied"
+        404:
+          description: "User not found"
+        403:
+          description: "User account has not been verified"
+  /auth/reset_password:
+    post:
+      tags:
+      - "auth"
+      summary: "Reset Password"
+      description: "Reset the user password and send success email"
+      operationId: "resetPasswordId"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "password"
+        in: "formData"
+        description: "New Password"
+        required: true
+        type: "string"
+        format: "password"
+        minLength: 5
+        maxLength: 255
+      - name: "confirmPassword"
+        in: "formData"
+        description: "Confirm Password"
+        required: true
+        type: "string"
+        format: "password"
+        minLength: 5
+        maxLength: 255
+      - name: "email"
+        in: "query"
+        description: "The email to reset password"
+        required: true
+        type: "string"
+        format: "email"
+        minLength: 5
+        maxLength: 255
+      - name: "token"
+        in: "query"
+        description: "Reset token"
+        required: true
+        type: "string"
+        format: "text"
+        minLength: 5
+        maxLength: 255
+      responses:
+        200:
+          description: "Password has been reset"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Invalid password supplied"
+        404:
+          description: "User not found"
+        401:
+          description: "Invalid token"
   /profiles/{username}:
     get:
       tags:

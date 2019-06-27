@@ -3,7 +3,7 @@ import chaiHttp from 'chai-http';
 import { findArticle } from '@helpers/articlePayload';
 import app from '../app';
 import { generateToken, createTestUser } from './factory/user-factory';
-import createTestArticle from './factory/articles-factory';
+import createTestArticle from './factory/article-factory';
 
 chai.use(chaiHttp);
 const {

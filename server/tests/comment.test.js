@@ -2,7 +2,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
 import { createTestUser, generateToken } from './factory/user-factory';
-import createTestArticle from './factory/articles-factory';
+import createTestArticle from './factory/article-factory';
 import createTestComment from './factory/comment-factory';
 
 let userToken, userTokenTwo, testSlug, testArticle, testComment;

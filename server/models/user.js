@@ -4,8 +4,8 @@ import { config } from 'dotenv';
 config();
 
 const salt = process.env.SALT || 5;
-// eslint-disable-next-line radix
-const SALT_ROUNDS = parseInt(salt);
+
+const SALT_ROUNDS = parseInt(salt, 10);
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -94,7 +94,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.hasOne(PasswordReset, {
-      foreignKey: 'userId'
+      foreignKey: 'userId',
+      as: 'resetToken'
     });
 
     User.hasMany(ArticleLike, {

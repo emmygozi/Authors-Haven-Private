@@ -39,7 +39,7 @@ class ArticleController {
       const { slug } = createdArticle.dataValues;
       const payload = await findArticle({ slug });
 
-      return res.status(201).json({ status: 'success', message: 'Article created successfully', payload });
+      return Response.success(res, 201, payload, 'Article created successfully');
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({
@@ -84,7 +84,7 @@ class ArticleController {
       const { slug } = updateArticle.dataValues;
       const payload = await findArticle({ slug });
 
-      return res.status(200).json({ status: 'success', message: 'Article successfully updated', payload });
+      return Response.success(res, 200, payload, 'Article successfully updated');
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({
@@ -169,7 +169,7 @@ class ArticleController {
         return Response.error(res, 403, 'You do not have permission to delete this article!');
       }
 
-      return res.status(200).json({ status: 'success', message: 'Article successfully deleted' });
+      return Response.success(res, 200, {}, 'Article successfully deleted');
     } catch (err) {
       next(err);
     }
@@ -215,7 +215,8 @@ class ArticleController {
       if (!payload) {
         return Response.error(res, 404, 'Article does not exist');
       }
-      return res.status(200).json({ status: 'success', message: 'Article successfully retrieved', payload });
+
+      return Response.success(res, 200, payload, 'Article successfully retrieved');
     } catch (err) {
       next(err);
     }

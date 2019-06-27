@@ -13,6 +13,21 @@
     },
     "HEROKU_PARENT_APP_NAME": {
       "required": true
+    },
+    "SENDGRID_API_KEY": {
+      "required": true
+    },
+    "BASE_URL": {
+      "required": true
+    },
+    "RESET_TOKEN_EXPIRE": {
+      "required": true
+    },
+    "PROJECT_NAME": {
+      "required": true
+    },
+    "PROJECT_EMAIL": {
+      "required": true
     }
   },
   "formation": {},

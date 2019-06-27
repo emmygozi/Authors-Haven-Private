@@ -1,4 +1,5 @@
 import models from '@models';
+import Response from '@helpers/Response';
 import validateComment from '@validations/comment';
 import { comments, singleComment } from '@helpers/comments';
 import { validationResponse } from '@helpers/validationResponse';
@@ -33,11 +34,7 @@ class CommentController {
 
       const payload = await comments(article.id);
 
-      return res.status(201).json({
-        status: 201,
-        message: 'Comment added successfully.',
-        payload
-      });
+      return Response.success(res, 201, payload, 'Comment added successfully.');
     } catch (error) {
       if (error.isJoi && error.name === 'ValidationError') {
         return res.status(400).json({
@@ -66,11 +63,7 @@ class CommentController {
 
       const payload = await comments(article.id);
 
-      return res.status(200).json({
-        status: 200,
-        message: 'Comments retrieved successfully.',
-        payload
-      });
+      return Response.success(res, 200, payload, 'Comments retrieved successfully.');
     } catch (error) {
       next(error);
     }
@@ -101,12 +94,7 @@ class CommentController {
 
       const payload = await comments(articleId);
 
-
-      return res.status(200).json({
-        status: 200,
-        message: 'Comment updated successfully.',
-        payload
-      });
+      return Response.success(res, 200, payload, 'Comment updated successfully.');
     } catch (error) {
       if (error.isJoi && error.name === 'ValidationError') {
         return res.status(400).json({
@@ -141,12 +129,7 @@ class CommentController {
 
       const payload = await comments(articleId);
 
-
-      return res.status(200).json({
-        status: 200,
-        message: 'Comment deleted successfully.',
-        payload
-      });
+      return Response.success(res, 200, payload, 'Comment deleted successfully.');
     } catch (error) {
       next(error);
     }
@@ -172,11 +155,7 @@ class CommentController {
 
       const payload = await singleComment(id);
 
-      return res.status(200).json({
-        status: 200,
-        message: 'Comment liked successfully.',
-        payload
-      });
+      return Response.success(res, 200, payload, 'Comment liked successfully.');
     } catch (error) {
       next(error);
     }
@@ -202,11 +181,7 @@ class CommentController {
 
       const payload = await singleComment(id);
 
-      return res.status(200).json({
-        status: 200,
-        message: 'Comment unliked successfully.',
-        payload
-      });
+      return Response.success(res, 200, payload, 'Comment unliked successfully.');
     } catch (error) {
       next(error);
     }

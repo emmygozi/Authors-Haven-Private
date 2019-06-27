@@ -109,11 +109,7 @@ class ProfileController {
       await userToFollow.addFollowers(me);
       const myProfile = await me.getProfile();
 
-      return res.status(201).json({
-        status: 201,
-        message: 'User followed successfully',
-        payload: myProfile || {},
-      });
+      return Response.success(res, 201, myProfile, 'User followed successfully');
     } catch (err) {
       return next(err);
     }
@@ -153,11 +149,7 @@ class ProfileController {
 
       const myProfile = await me.getProfile();
 
-      return res.status(200).json({
-        status: 200,
-        message: 'User unfollowed successfully',
-        payload: myProfile || {},
-      });
+      return Response.success(res, 200, myProfile, 'User unfollowed successfully');
     } catch (err) {
       return next(err);
     }

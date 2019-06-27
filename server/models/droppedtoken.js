@@ -5,9 +5,5 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: DataTypes.DATE
   }, {});
 
-  // eslint-disable-next-line no-unused-vars
-  DroppedToken.associate = (models) => {
-    // associations can be defined here
-  };
   return DroppedToken;
 };
