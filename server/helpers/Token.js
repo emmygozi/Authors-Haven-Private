@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { config } from 'dotenv';
-import Response from './Response';
+import Response from '@helpers/Response';
 import models from '../models';
 
 const { User, DroppedToken } = models;
@@ -49,30 +49,35 @@ class Token {
   */
   static async authorize(req, res, next) {
     try {
+      if (req.url === '/auth/login'
+      || req.url === '/auth/forgot_password'
+      || req.url.includes('/auth/reset_password')) return next();
       const token = await Token.getToken(req);
-      if (!token) return Response.error(res, 400, 'Invalid token supplied: format Bearer <token>');
-
-      const decoded = jwt.verify(token, tokenSecret);
-      const user = await User.findOne({ where: { id: decoded.id } });
-      if (!user) {
-        return Response.error(res, 401, 'Invalid Token Provided');
-      }
-
-      const droppedToken = await DroppedToken.findOne({
-        where: {
-          token
+      if (token) {
+        const decoded = jwt.verify(token, tokenSecret);
+        const user = await User.findOne({ where: { id: decoded.id } });
+        if (user) {
+          const droppedToken = await DroppedToken.findOne({
+            where: {
+              token
+            }
+          });
+          if (!droppedToken) {
+            req.user = user;
+            req.decoded = decoded;
+          } else {
+            const error = new Error('Invalid Token');
+            error.name = 'DroppedToken';
+            throw error;
+          }
         }
-      });
-      if (droppedToken) {
-        return Response.error(res, 401, 'Invalid Token Provided');
       }
-      req.user = user;
-      req.decoded = decoded;
       next();
     } catch (error) {
-      if (error.name === 'JsonWebTokenError') {
-        return Response.error(res, 401, 'Invalid Token Provided');
-      }
+      if (req.url === '/auth/logout') return Response.success(res, 200, {}, 'You are now logged out');
+      if (error.name === 'JsonWebTokenError'
+      || error.name === 'DroppedToken') return Response.error(res, 401, 'Invalid Token Provided');
+      if (error.name === 'TokenExpiredError') return Response.error(res, 401, 'Token Expired');
       next(error);
     }
   }

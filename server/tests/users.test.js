@@ -219,15 +219,15 @@ describe('TESTS TO LOGIN A USER', () => {
       throw err.message;
     }
   });
-  it('should return error for already dropped token', (done) => {
+  it('should return 200 even though token has been dropped', (done) => {
     try {
       chai.request(app)
         .post('/api/v1/auth/logout')
         .set('Authorization', `Bearer ${userToken}`)
         .end((err, res) => {
-          expect(res.status).to.be.equal(401);
-          expect(res.body).to.have.property('errors');
-          expect(res.body.errors.global).to.be.equal('Invalid Token Provided');
+          expect(res.status).to.be.equal(200);
+          expect(res.body).to.have.property('status');
+          expect(res.body.payload).to.be.an('object');
           done();
         });
     } catch (err) {
@@ -251,15 +251,15 @@ describe('TESTS TO LOGIN A USER', () => {
     }
   });
 
-  it('should return error for invalid token', (done) => {
+  it('should return 200 even though token is invalid', (done) => {
     try {
       chai.request(app)
         .post('/api/v1/auth/logout')
         .set('Authorization', `Bearer ${invalidToken}`)
         .end((err, res) => {
-          expect(res.statusCode).to.be.equal(401);
-          expect(res.body).to.have.property('errors');
-          expect(res.body.errors.global).to.be.equal('Invalid Token Provided');
+          expect(res.status).to.be.equal(200);
+          expect(res.body).to.have.property('status');
+          expect(res.body.payload).to.be.an('object');
           done();
         });
     } catch (err) {
