@@ -132,6 +132,27 @@ paths:
           description: "Invalid Token Provided"
       security:
       - api_key: []
+  /users/history:
+    get:
+      tags:
+      - "users"
+      summary: "User's Read History"
+      description: "Returns a list of articles that user has read"
+      operationId: "getReadHistory"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/ApiResponseArray"
+        400:
+          description: "Invalid token supplied: format Bearer <token>"
+        401:
+          description: "Invalid Token Provided"
+      security:
+      - api_key: []
   /auth/login:
     post:
       tags:
@@ -349,6 +370,8 @@ paths:
             $ref: "#/definitions/ApiResponse"
         400:
           description: "fail"
+      security:
+      - api_key: []
     delete:
       tags:
       - "articles"
@@ -759,6 +782,19 @@ definitions:
         format: "int32"
       data:
         type: "object"
+        items:
+          type: "object"
+  ApiResponseArray:
+    type: "object"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+        format: "text"
+      payload:
+        type: "array"
         items:
           type: "object"
 externalDocs:

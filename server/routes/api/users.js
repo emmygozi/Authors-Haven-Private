@@ -9,5 +9,6 @@ const userRouter = express.Router();
 userRouter.post('/', trim, UserController.create);
 userRouter.get('/', authorizeAccess, UserController.getUsers);
 userRouter.put('/', authorizeAccess, trim, ProfileController.updateProfile);
+userRouter.get('/history', UserController.getReadHistory);
 
 export default userRouter;

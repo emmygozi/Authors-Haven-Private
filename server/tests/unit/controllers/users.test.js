@@ -72,6 +72,12 @@ describe('UsersController', () => {
     await UsersController.resetPassword({}, {}, next);
     sinon.assert.calledOnce(next);
   });
+
+  it('should handle get user\'s history', async () => {
+    const next = sinon.spy();
+    await UsersController.getReadHistory({}, {}, next);
+    sinon.assert.calledOnce(next);
+  });
 });
 
 describe('Test Token authorize', () => {

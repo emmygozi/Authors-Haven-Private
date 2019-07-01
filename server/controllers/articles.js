@@ -216,6 +216,10 @@ class ArticleController {
         return Response.error(res, 404, 'Article does not exist');
       }
 
+      if (req.user && (req.decoded.id !== payload.get().author.id)) {
+        await req.user.addHistory(payload);
+      }
+
       return Response.success(res, 200, payload, 'Article successfully retrieved');
     } catch (err) {
       next(err);
