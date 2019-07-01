@@ -30,6 +30,33 @@ const sendMail = ({ to, subject, message }) => {
   sgMail.send(mailOptions);
 };
 
+const sendVerifyMailToken = (token, email, name) => {
+  const emailBody = {
+    body: {
+      name,
+      intro: `Welcome ${name}, glad to have you onboard. Please verify your mail to enjoy premium access.`,
+      action: {
+        instructions: 'Click on the button below to verify your mail and start enjoying full access.',
+        button: {
+          color: '#1a82e2',
+          text: 'Verify Your Account',
+          link: `${url}/auth/activate_user?email=${email}&token=${token}`
+        }
+      },
+      outro: `If that doesn't work, copy and paste the following link in your browser:
+      \n\n${url}/auth/activate_user?email=${email}&token=${token}`
+    }
+  };
+  // Generate an HTML email with the provided contents
+  const message = mailGenerator.generate(emailBody);
+
+  return sendMail({
+    to: email,
+    subject: `${projectName}: Forgot Password`,
+    message
+  });
+};
+
 const sendForgotPasswordMail = (token, email, name) => {
   const link = `${url}/auth/reset_password?email=${email}&token=${token}`;
   const emailBody = {
@@ -82,4 +109,4 @@ const sendResetSuccessMail = (email, name) => {
   });
 };
 
-export { sendForgotPasswordMail, sendResetSuccessMail };
+export { sendForgotPasswordMail, sendResetSuccessMail, sendVerifyMailToken };

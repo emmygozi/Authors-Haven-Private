@@ -9,7 +9,6 @@ import { createTestUser } from '../../factory/user-factory';
 
 const { expect } = chai;
 
-
 describe('ArticleController', () => {
   let article;
 

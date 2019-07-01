@@ -1,11 +1,11 @@
 language: node_js
 node_js:
-- 10.3.0
+  - "10.3.0"
 cache:
   directories:
-  - node_modules
+    - node_modules
 before_install:
-- npm install
+  - npm install
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
@@ -14,9 +14,9 @@ before_script:
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 after_success:
-- npm run coverage
+  - npm run coverage
 script:
-- npm run test
+  - npm run test
 notifications:
   slack:
     secure: xT9Bh6UiJsGli+Fens/VLT5XJpxvdFdi+4xdH88OJc/nncWUjeYjbQnncX3iIm0GL6Gq+NKJ/1DQ5buJ7dPFKiB3f13zeitvLjjTpBQq0jpObYFFKg1bTxfD2RDuqC3wVYqsGwHcj1Ns0qXVwbMYMtgrvy0Ub2j0oNiWYv/RNogd8b3+hpKQZt85fBgpaMsQ9qGRpvrC+W4GGSvTYD1AUQ85LHnTFqs5w0yN+h0JM1vqhjt2yG11n5S+u5EdcZNIkniTxjzUIsnXJ2qvdr4FctTd6Fdr8RpCTL1Sj/+CLAmZV3iS4EBG3Y74B/bImKIb/C5aLZV2A6zunBGHMUoezOp2sIEgU3Hdq4k1isVk404Z39pBN6fa4ig64GYw5NxQO6EaW4xwPpGWwNo4nn/5wKV+nf5PGRxImHtGaj6Irlc5UCvHU3l4xYjfGBilBR7eYcOPdAHbeWF7bnSlo+Zw+Mq9MNm24uuqLu8EAhcHXG6+I1gQfXtp16N2urnmkDMiW5laFiO9YtnRvNq1M67BP8nJvdpgvOeuYNFrNXxsPlVZxz0Rik38jiuraVaWsyoxcDK7lIkGWUaPSsk7YrG5EAQYUu3R7sVDVYngeC5Y6kJBqZIvnEiRxytOXBO3GMR/P1Jjkc3wYHj5PwLsBg3GwLA5ixPz9Jw12ibCnlZKbmw=

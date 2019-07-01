@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { generateToken, createNonActiveUser } from './factory/user-factory';
+import { generateToken, createTestUser, createNonActiveUser } from './factory/user-factory';
 import createArticles from './factory/article-factory';
 import app from '../app';
 
@@ -13,7 +13,7 @@ let wrongToken;
 describe('TESTS TO CREATE AN ARTICLE', () => {
   let newArticle, userToken;
   before(async () => {
-    const { id, email } = await createNonActiveUser({ });
+    const { id, email } = await createTestUser({ });
     const payload = {
       id,
       email
@@ -30,7 +30,7 @@ describe('TESTS TO CREATE AN ARTICLE', () => {
         .set('Authorization', `Bearer ${userToken}`)
         .send({
           title: newArticle.title,
-          body: newArticle.body
+          body: newArticle.body,
         })
         .end((err, res) => {
           expect(res.status).to.equal(201);
@@ -92,7 +92,7 @@ describe('TESTS TO CREATE AN ARTICLE', () => {
 describe('TESTS TO UPDATE AN ARTICLE', () => {
   let newArticle, userToken;
   before(async () => {
-    const { id, email } = await createNonActiveUser({ });
+    const { id, email } = await createTestUser({ });
     const payload = {
       id,
       email
@@ -193,7 +193,7 @@ describe('TESTS TO UPDATE AN ARTICLE', () => {
 describe('TESTS TO GET ARTICLES', () => {
   let newArticle, authToken;
   before(async () => {
-    const { id } = await createNonActiveUser({ });
+    const { id } = await createTestUser({ });
 
     newArticle = await createArticles(id, {});
 
@@ -308,14 +308,14 @@ describe('TESTS TO GET ARTICLES', () => {
 describe('TESTS TO DELETE AN ARTICLE', () => {
   let newArticle, userToken, useNotPermittedToDelete;
   before(async () => {
-    const { id, email } = await createNonActiveUser({ });
+    const { id, email } = await createTestUser({ });
     const payload = {
       id,
       email
     };
     userToken = await generateToken(payload);
     newArticle = await createArticles(id, {});
-    const { id: user, email: mail } = await createNonActiveUser({ });
+    const { id: user, email: mail } = await createTestUser({ });
     payload.id = user;
     payload.email = mail;
     useNotPermittedToDelete = await generateToken(payload);

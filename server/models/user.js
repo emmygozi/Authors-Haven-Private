@@ -43,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = (models) => {
     const {
-      Article, Profile, Social, ReportArticle, Rating, PasswordReset,
-      ArticleLike, CommentLike, Comment, Role
+      Article, Profile, Social, ReportArticle, Rating, PasswordReset, Comment,
+      ArticleLike, CommentLike, Role, VerifyUser
     } = models;
 
     User.hasOne(Profile, {
@@ -127,6 +127,11 @@ module.exports = (sequelize, DataTypes) => {
       through: 'UserRole',
       as: 'role',
       foreignKey: 'userId'
+    });
+
+    User.hasOne(VerifyUser, {
+      foreignKey: 'userId',
+      as: 'verifiedUser'
     });
   };
   User.hashPassword = async (user) => {

@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import { Op } from 'sequelize';
+import randomString from 'random-string';
+import { config } from 'dotenv';
 import models from '@models';
 import {
   validateLogin,
@@ -9,16 +11,19 @@ import {
 } from '@validations/auth';
 import Token from '@helpers/Token';
 import userExtractor from '@helpers/userExtractor';
+import { articleObject, extractArticle } from '@helpers/articlePayload';
 import {
   validationResponse,
   validateUniqueResponse
 } from '@helpers/validationResponse';
 import Response from '@helpers/Response';
-import { articleObject, extractArticle } from '@helpers/articlePayload';
-import { sendForgotPasswordMail, sendResetSuccessMail } from '@helpers/mailer';
-import randomString from 'random-string';
+import { sendForgotPasswordMail, sendResetSuccessMail, sendVerifyMailToken } from '@helpers/mailer';
 
-const { User, DroppedToken } = models;
+config();
+
+const {
+  User, DroppedToken, VerifyUser
+} = models;
 
 /**
  * @exports UserController
@@ -38,7 +43,7 @@ class UserController {
   static async create(req, res, next) {
     try {
       const userDetails = await validateSignup(req.body);
-      const user = await User.create({ ...userDetails, active: true });
+      const user = await User.create({ ...userDetails });
       const payload = {
         id: user.id,
         email: user.email
@@ -47,7 +52,19 @@ class UserController {
       await user.createProfile();
 
       const token = await Token.create(payload);
-      return Response.success(res, 201, userExtractor(user, token), 'User created successfully');
+
+      const tokenExpiry = Date.now() + ((Number(process.env.RESET_TOKEN_EXPIRE)) || 75600000);
+      const verifyToken = randomString({ length: 40 });
+
+      const verifyDetails = {
+        verifyToken, tokenExpiry, userId: user.id
+      };
+
+      await VerifyUser.create({ ...verifyDetails });
+      sendVerifyMailToken(verifyToken, user.email, user.username);
+      return res.status(201).json({
+        status: 'success', message: 'User created successfully', payload: userExtractor(user, token)
+      });
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
         return res.status(400).json({
@@ -81,8 +98,7 @@ class UserController {
       const { email, password } = logindetails;
       const user = await User.findOne({
         where: {
-          email,
-          active: true
+          email
         }
       });
 
@@ -153,6 +169,104 @@ class UserController {
       return Response.success(res, 200, users, 'Users and corresponding profiles retrieved successfully');
     } catch (error) {
       next(error);
+    }
+  }
+
+  /**
+   * Update token
+   * @async
+   * @param {object} user
+   * @return {string} Returns token string
+   * @static
+   */
+  static async createVerifyToken(user) {
+    const { id } = user;
+    const verifyToken = randomString({ length: 40 });
+    const tokenExpiry = Date.now() + ((Number(process.env.RESET_TOKEN_EXPIRE)) || 75600000);
+
+    const verifyDetails = {
+      verifyToken, tokenExpiry, userId: id
+    };
+
+    const userDetails = await user.getVerifiedUser({
+      where: {
+        userId: id
+      }
+    });
+
+    await userDetails
+      .update(verifyDetails);
+
+    return verifyToken;
+  }
+
+  /**
+  * Sends mail to verify a new user
+  * @async
+  * @param  {object} req - Request object
+  * @param {object} res - Response object
+  * @param {object} next The next middleware
+  * @return {json} Returns json object
+  * @static
+  */
+  static async sendMailToVerifyAccount(req, res, next) {
+    try {
+      const {
+        active, email, username
+      } = req.user;
+
+      const { user } = req;
+      if (active === false) {
+        const verifyToken = await UserController.createVerifyToken(user);
+        sendVerifyMailToken(verifyToken, email, username);
+        return Response.success(res, 200, 'Verification mail sent');
+      }
+      if (active) {
+        return Response.error(res, 400, 'You are already verified');
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+* Verifies a new user
+* @async
+* @param  {object} req - Request object
+* @param {object} res - Response object
+* @param {object} next The next middleware
+* @return {json} Returns json object
+* @static
+*/
+  static async verifyAccount(req, res, next) {
+    try {
+      const { token, email } = req.query;
+
+      if (!token || !email) return Response.error(res, 400, 'Please use a valid verification link');
+      const user = await User.findOne({ where: { email } });
+      if (!user) return Response.error(res, 401, 'Invalid Token');
+
+      const tokenDetails = await user.getVerifiedUser({
+        where: {
+          tokenExpiry: {
+            [Op.gt]: Date.now()
+          }
+        }
+      });
+
+      if (!tokenDetails) return Response.error(res, 401, 'Invalid Token');
+
+      const { verifyToken } = tokenDetails.get();
+
+      const match = await bcrypt.compare(token, verifyToken);
+      if (!match) return Response.error(res, 401, 'Invalid Token');
+
+
+      await user.update({ active: true });
+      await tokenDetails.destroy();
+      return Response.success(res, 200, 'You a now verified');
+    } catch (err) {
+      next(err);
     }
   }
 

@@ -268,6 +268,74 @@ paths:
           description: "User not found"
         401:
           description: "Invalid token"
+  /auth/verify_account:
+    post:
+      tags:
+      - "auth"
+      summary: "Send Verification mail"
+      description: "Send verification link if previous link has expired"
+      operationId: "verificationAccountId"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "query"
+        description: "The email to reset password"
+        required: true
+        type: "string"
+        format: "email"
+        minLength: 5
+        maxLength: 255
+      - name: "token"
+        in: "query"
+        description: "Reset token"
+        required: true
+        type: "string"
+        format: "text"
+        minLength: 5
+        maxLength: 255
+      responses:
+        200:
+          description: "Verification mail sent"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "You are already verified"
+  /auth/activate_user:
+    post:
+      tags:
+      - "auth"
+      summary: "Activate User"
+      description: "Activate user on verification"
+      operationId: "activateUserId"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "query"
+        description: "Verify token"
+        required: true
+        type: "string"
+        format: "text"
+        minLength: 5
+        maxLength: 255
+      - name: "email"
+        in: "query"
+        description: "Email"
+        required: true
+        type: "string"
+        format: "text"
+        minLength: 5
+        maxLength: 255
+      responses:
+        200:
+          description: "You a now verified"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Please use a valid verification link"
+        401:
+          description: "Invalid token"
   /profiles/{username}:
     get:
       tags:
