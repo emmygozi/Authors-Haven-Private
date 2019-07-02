@@ -49,9 +49,10 @@ class Token {
   */
   static async authorize(req, res, next) {
     try {
-      if (req.url === '/auth/login'
-      || req.url === '/auth/forgot_password'
-      || req.url.includes('/auth/reset_password')) return next();
+      if ((req.url.startsWith('/users') && req.method === 'POST')
+        || req.url.startsWith('/auth/login')
+        || req.url.startsWith('/auth/forgot_password')
+        || req.url.includes('/auth/reset_password')) return next();
       const token = await Token.getToken(req);
       if (token) {
         const decoded = jwt.verify(token, tokenSecret);
@@ -76,7 +77,7 @@ class Token {
     } catch (error) {
       if (req.url === '/auth/logout') return Response.success(res, 200, {}, 'You are now logged out');
       if (error.name === 'JsonWebTokenError'
-      || error.name === 'DroppedToken') return Response.error(res, 401, 'Invalid Token Provided');
+        || error.name === 'DroppedToken') return Response.error(res, 401, 'Invalid Token Provided');
       if (error.name === 'TokenExpiredError') return Response.error(res, 401, 'Token Expired');
       next(error);
     }
