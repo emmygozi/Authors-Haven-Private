@@ -9,7 +9,6 @@ const { expect } = chai;
 
 let wrongToken;
 
-
 describe('TESTS TO CREATE AN ARTICLE', () => {
   let newArticle, userToken;
   before(async () => {
@@ -362,6 +361,90 @@ describe('TESTS TO DELETE AN ARTICLE', () => {
           expect(res.body.errors).to.be.an('object');
           expect(res.body.errors.global).to.eql('Article does not exist');
           expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+});
+
+describe('TESTS TO LIKE AND UNLIKE AN ARTICLE', () => {
+  let article, userToken;
+  before(async () => {
+    const { id, email } = await createTestUser({ });
+    const payload = {
+      id,
+      email
+    };
+    userToken = await generateToken(payload);
+    article = await createArticles(id, {});
+    wrongToken = userToken;
+  });
+
+  it('should like an article', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${article.slug}/like`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(201);
+          expect(res.body).to.be.an('object');
+          expect(res.body).to.have.property('status');
+          expect(res.body.message).to.eql('Article has been liked');
+          expect(res.body.payload.slug).to.eql(article.slug);
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should display article not found when article is not available', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/articles/errororor/like')
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body).to.have.property('status');
+          expect(res.body.errors.global).to.eql('Article not found');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should unlike an article', (done) => {
+    try {
+      chai.request(app)
+        .delete(`/api/v1/articles/${article.slug}/like`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body).to.have.property('status');
+          expect(res.body.message).to.eql('Article has been unliked');
+          expect(res.body.payload.slug).to.eql(article.slug);
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should display article not found when article is not available', (done) => {
+    try {
+      chai.request(app)
+        .delete('/api/v1/articles/errororor/like')
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body).to.have.property('status');
+          expect(res.body.errors.global).to.eql('Article to unlike was not found');
           done();
         });
     } catch (err) {

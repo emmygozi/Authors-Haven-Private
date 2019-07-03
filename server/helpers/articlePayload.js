@@ -3,7 +3,7 @@ import models from '@models';
 import Pagination from '@helpers/Pagination';
 
 const {
-  Article, Profile, User, Rating
+  Article, User, Rating, Profile, ArticleLike
 } = models;
 
 const articleObject = {
@@ -28,6 +28,11 @@ const articleObject = {
       attributes: []
     },
     {
+      model: ArticleLike,
+      as: 'ArticleLikes',
+      attributes: ['id']
+    },
+    {
       model: User,
       as: 'author',
       attributes: [
@@ -41,7 +46,7 @@ const articleObject = {
       }]
     }
   ],
-  group: ['Article.id', 'author.id', 'author->profile.id']
+  group: ['Article.id', 'author.id', 'author->profile.id', 'ArticleLikes.userId', 'ArticleLikes.articleId', 'ArticleLikes.id']
 };
 
 const findAllArticle = async (req) => {

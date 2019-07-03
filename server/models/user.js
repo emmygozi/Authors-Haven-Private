@@ -43,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = (models) => {
     const {
-      Article, Profile, Social, ReportArticle, Rating, PasswordReset, Comment,
-      ArticleLike, CommentLike, Role, VerifyUser
+      Article, Profile, Social, ReportArticle, Rating, PasswordReset,
+      ArticleLike, CommentLike, Comment, Role, VerifyUser
     } = models;
 
     User.hasOne(Profile, {
@@ -128,7 +128,13 @@ module.exports = (sequelize, DataTypes) => {
       as: 'role',
       foreignKey: 'userId'
     });
-
+    User.belongsToMany(Article, {
+      foreignKey: 'userId',
+      otherKey: 'articleId',
+      through: 'ArticleLike',
+      as: 'users',
+      timestamps: false,
+    });
     User.hasOne(VerifyUser, {
       foreignKey: 'userId',
       as: 'verifiedUser'

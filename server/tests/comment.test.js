@@ -1,7 +1,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
-import { createTestUser, generateToken } from './factory/user-factory';
+import { createTestUser, generateToken, generateExpiredToken } from './factory/user-factory';
 import createTestArticle from './factory/article-factory';
 import createTestComment from './factory/comment-factory';
 
@@ -314,10 +314,12 @@ describe('TESTS TO DELETE A COMMENT', () => {
 });
 
 describe('TESTS TO LIKE A COMMENT', () => {
+  let expiredToken;
   before(async () => {
     const testUser = await createTestUser({});
     const { id } = testUser;
     userToken = await generateToken({ id });
+    expiredToken = await generateExpiredToken({ id }, 0);
 
     testArticle = await createTestArticle(id, {});
     const { slug } = testArticle;
@@ -352,6 +354,23 @@ describe('TESTS TO LIKE A COMMENT', () => {
           expect(res.body).to.have.property('payload');
           expect(res.body.payload).to.be.an('object');
           expect(res.body.message).to.eql('Comment unliked successfully.');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return `Token expired` when expired token is entered. ', (done) => {
+    try {
+      chai.request(app)
+        .delete(`/api/v1/articles/${testSlug}/comments/${testComment.id}/like`)
+        .set('Authorization', `Bearer ${expiredToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          expect(res.body).to.have.property('errors');
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.global).to.eql('Token Expired');
           done();
         });
     } catch (err) {

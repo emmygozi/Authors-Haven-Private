@@ -1,12 +1,25 @@
 import models from '@models';
 import faker from 'faker';
+import jwt from 'jsonwebtoken';
+import { config } from 'dotenv';
 import Token from '@helpers/Token';
 import { createTestProfile, createProfileWithDetails } from './profile-factory';
+
+config();
 
 const { User } = models;
 
 const generateToken = async (userDetails) => {
   const token = await Token.create(userDetails);
+  return token;
+};
+
+const generateExpiredToken = async (userDetails, expiry) => {
+  const tokenSecret = process.env.SECRET || 'secret';
+  const token = await jwt.sign(userDetails, tokenSecret, {
+    expiresIn: expiry
+  });
+
   return token;
 };
 
@@ -58,5 +71,6 @@ export {
   createTestUser,
   createTestUserWithoutProfile,
   generateToken,
+  generateExpiredToken,
   createNonActiveUser
 };
