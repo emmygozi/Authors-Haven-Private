@@ -712,6 +712,39 @@ paths:
           description: "Article does not exist"
       security:
       - api_key: []
+  /articles/{slug}/report:
+    post:
+        tags:
+        - "articles"
+        summary: "Report an Article"
+        description: "Reports an article"
+        operationId: "report"
+        produces:
+        - "application/json"
+        parameters:
+        - name: "slug"
+          in: "path"
+          description: "Slug of the article to report"
+          required: true
+          type: "string"
+          format: "slug"
+        - name: "report"
+          in: "formData"
+          description: "The body of the report"
+          required: true
+          type: "string"
+          format: "text"
+        responses:
+          201:
+            description: "Article successfully reported!"
+            schema:
+              $ref: "#/definitions/ApiResponse"
+          400:
+            description: "Bad Request"
+          404:
+            description: "Article was not found"
+        security:
+        - api_key: []
 securityDefinitions:
   api_key:
     type: "apiKey"

@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import chai from 'chai';
-import { validateArticle } from '@validations/auth';
+import { validateArticle, validateReport } from '@validations/auth';
 import validateRatings from '@validations/rating';
 import { findAllArticle, extractArticle } from '@helpers/articlePayload';
 import ArticleController from '@controllers/articles';
@@ -98,5 +98,14 @@ describe('ArticleController', () => {
     expect(filteredArticle[0]).to.have.property('id');
     expect(filteredArticle[0]).to.not.have.property('invalidKey');
     done();
+  });
+
+  it('should handle report an article', async () => {
+    const stubFunc = { validateReport };
+    sandbox.stub(stubFunc, 'validateReport').rejects('Oops');
+
+    const next = sinon.spy();
+    await ArticleController.report({}, {}, next);
+    sinon.assert.calledOnce(next);
   });
 });

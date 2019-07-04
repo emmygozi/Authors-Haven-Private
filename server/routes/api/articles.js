@@ -30,4 +30,6 @@ articlesRouter.delete('/:slug', authorizeAccess, isUserVerified, ArticleControll
 articlesRouter.get('/:slug/rate', ArticleController.getArticleRatings);
 articlesRouter.post('/:slug/rate', trim, authorizeAccess, isUserVerified, ArticleController.rate);
 
+articlesRouter.post('/:slug/report', authorizeAccess, isUserVerified, ArticleController.report);
+
 export default articlesRouter;

@@ -452,3 +452,129 @@ describe('TESTS TO LIKE AND UNLIKE AN ARTICLE', () => {
     }
   });
 });
+
+describe('TESTS TO REPORT AN ARTICLE', () => {
+  let userToken, article;
+  const reportArticle = {
+    report: 'I am reporting this article',
+  };
+  const invalidReport = {
+    report: 'Err',
+  };
+  before(async () => {
+    const { id, email } = await createTestUser({ });
+    const payload = {
+      id,
+      email
+    };
+    userToken = await generateToken(payload);
+    article = await createArticles(id, {});
+  });
+
+  it('should report an article', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${article.slug}/report`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send(reportArticle)
+        .end((err, res) => {
+          expect(res.status).to.equal(201);
+          expect(res.body).to.be.an('object');
+          expect(res.body).to.have.property('status');
+          expect(res.body.message).to.eql('Article successfully reported!');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return article does not exist when invalid slug is entered', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/articles/invalid-slug/report')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send(reportArticle)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.global).to.eql('Article was not found');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return error when invalid token is entered', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${article.slug}/report`)
+        .set('Authorization', `Bearer ${userToken}makesinvlaid`)
+        .send(reportArticle)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.global).to.eql('Invalid Token Provided');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return error when no token is provided', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${article.slug}/report`)
+        .send(reportArticle)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.global).to.eql('Invalid token supplied: format Bearer <token>');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return error when invalid report is supplied', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${article.slug}/report`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send(invalidReport)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.report).to.eql('report length must be at least 4 characters long');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return error when invalid report is supplied', (done) => {
+    try {
+      chai.request(app)
+        .post(`/api/v1/articles/${article.slug}/report`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({})
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.report).to.eql('report is required');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+});

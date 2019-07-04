@@ -1,5 +1,5 @@
 import models from '@models';
-import { validateArticle } from '@validations/auth';
+import { validateArticle, validateReport } from '@validations/auth';
 import { validationResponse } from '@helpers/validationResponse';
 import Response from '@helpers/Response';
 import { findAllArticle, findArticle } from '@helpers/articlePayload';
@@ -7,7 +7,7 @@ import validateRating from '@validations/rating';
 import Pagination from '@helpers/Pagination';
 
 const {
-  Article, User, Rating, Profile
+  Article, User, Rating, Profile, ReportArticle
 } = models;
 
 /**
@@ -324,6 +324,37 @@ class ArticleController {
       return Response.success(res, 200, article, 'Article has been unliked');
     } catch (err) {
       return next(err);
+    }
+  }
+
+  /**
+   * Users can report an article
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   * @memberof ArticleController
+   * @return {json} return json object
+   */
+  static async report(req, res, next) {
+    try {
+      const userId = req.decoded.id;
+      const { slug } = req.params;
+      const report = await validateReport(req.body);
+      const article = await findArticle({ slug });
+      if (!article) return Response.error(res, 404, 'Article was not found');
+      const { id } = article;
+      const reportArticle = await ReportArticle.create({ articleId: id, userId, ...report });
+      return Response.success(res, 201, reportArticle, 'Article successfully reported!');
+    } catch (error) {
+      if (error.isJoi && error.name === 'ValidationError') {
+        return res.status(400).json({
+          status: 400,
+          errors: validationResponse(error)
+        });
+      }
+      return next(error);
     }
   }
 }
