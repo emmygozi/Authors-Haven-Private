@@ -2,12 +2,12 @@ import models from '@models';
 import { validateArticle, validateReport } from '@validations/auth';
 import { validationResponse } from '@helpers/validationResponse';
 import Response from '@helpers/Response';
-import { findAllArticle, findArticle } from '@helpers/articlePayload';
+import { findAllArticle, findArticle, getSpecificTag } from '@helpers/articlePayload';
 import validateRating from '@validations/rating';
 import Pagination from '@helpers/Pagination';
 
 const {
-  Article, User, Rating, Profile, ReportArticle
+  Article, User, Rating, Profile, ReportArticle, Tag
 } = models;
 
 /**
@@ -30,15 +30,21 @@ class ArticleController {
       const articleDetails = await validateArticle(req.body);
       const { id: userId } = req.decoded;
       const { title } = articleDetails;
+      let { tags } = articleDetails;
       articleDetails.title = articleDetails.title.replace(/ +/g, ' ');
       const createArticleDetails = {
         slug: title, userId, ...articleDetails
       };
-
+      if (typeof tags === 'undefined' || tags === null) {
+        tags = [];
+      }
       const createdArticle = await Article.create(createArticleDetails);
-      const { slug } = createdArticle.dataValues;
-      const payload = await findArticle({ slug });
-
+      const { slug } = createdArticle;
+      await Tag.create({ articleSlug: slug, tagList: tags });
+      const article = await findArticle({ slug });
+      const articleTags = await getSpecificTag(slug);
+      const payload = article.dataValues;
+      payload.tags = articleTags.tagList;
       return Response.success(res, 201, payload, 'Article created successfully');
     } catch (err) {
       if (err.isJoi && err.name === 'ValidationError') {
@@ -65,24 +71,33 @@ class ArticleController {
       const articleDetails = await validateArticle(req.body);
       const { user } = req;
       const { slug: updatedSlug } = req.params;
+      let { tags } = req.body;
       articleDetails.title = articleDetails.title.replace(/ +/g, ' ');
-
       const getArticle = await Article.findOne({ where: { slug: updatedSlug } });
-
       const canUpdate = await user.hasArticle(getArticle);
-
-
+      let articleTags = await getSpecificTag(updatedSlug);
+      if (articleTags) {
+        if (typeof tags === 'undefined' || tags === null) {
+          tags = articleTags.tagList;
+        }
+      }
       if (!getArticle) {
         return Response.error(res, 404, 'Article does not exist');
       }
-
       if (!canUpdate) {
         return Response.error(res, 403, 'You do not have permission to update this article!');
       }
+      await Tag.update({ tagList: tags }, {
+        where: {
+          articleSlug: updatedSlug
+        }
+      });
+      await getArticle.update(articleDetails);
+      const article = await findArticle({ slug: updatedSlug });
+      articleTags = await getSpecificTag(updatedSlug);
 
-      const updateArticle = await getArticle.update(articleDetails);
-      const { slug } = updateArticle.dataValues;
-      const payload = await findArticle({ slug });
+      const payload = article.dataValues;
+      payload.tags = tags;
 
       return Response.success(res, 200, payload, 'Article successfully updated');
     } catch (err) {
@@ -163,12 +178,13 @@ class ArticleController {
         return Response.error(res, 404, 'Article does not exist');
       }
 
+      await Tag.destroy({ where: { articleSlug: slug } });
       const deletedArticle = await Article.destroy({ where: { slug, userId } });
+
 
       if (!deletedArticle) {
         return Response.error(res, 403, 'You do not have permission to delete this article!');
       }
-
       return Response.success(res, 200, {}, 'Article successfully deleted');
     } catch (err) {
       next(err);
@@ -355,6 +371,27 @@ class ArticleController {
         });
       }
       return next(error);
+    }
+  }
+
+  /**
+   * Retrieves all tags
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   * @memberof ArticleController
+   * @returns {json} returns json object
+   */
+  static async getAllTags(req, res, next) {
+    try {
+      const allTags = await Tag.findAll({
+        attributes: ['id', ['articleSlug', 'slug'], ['tagList', 'tags']]
+      });
+      return Response.success(res, 200, allTags, 'All tags retrieved');
+    } catch (err) {
+      return next(err);
     }
   }
 }

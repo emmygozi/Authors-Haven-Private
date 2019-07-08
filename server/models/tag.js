@@ -1,12 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
   const Tag = sequelize.define('Tag', {
-    articleId: {
-      type: DataTypes.UUID,
-      allowNull: false
-    },
-    name: {
+    articleSlug: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    tagList: {
+      type: DataTypes.ARRAY(DataTypes.TEXT),
+      allowNull: true
     }
   }, {});
 
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     const { Article } = models;
 
     Tag.belongsTo(Article, {
-      foreignKey: 'articleId',
+      foreignKey: 'articleSlug',
       as: 'articles'
     });
   };

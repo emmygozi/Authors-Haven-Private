@@ -1,9 +1,9 @@
 import faker from 'faker';
 import models from '@models';
 
-const { Article } = models;
+const { Article, Tag } = models;
 
-const createTestArticle = async (userId, { title, body }) => {
+const createTestArticle = async (userId, { title, body, tags }) => {
   const newArticle = await Article.create({
     id: faker.random.uuid(),
     userId,
@@ -13,8 +13,13 @@ const createTestArticle = async (userId, { title, body }) => {
     readTime: '4 mins',
     image: faker.image.imageUrl()
   });
-
-  return newArticle;
+  const newTag = await Tag.create({
+    articleSlug: newArticle.slug,
+    tagList: tags || undefined
+  });
+  const generatedArticle = newArticle.dataValues;
+  generatedArticle.tagList = newTag.dataValues.tagList;
+  return generatedArticle;
 };
 
 export default createTestArticle;

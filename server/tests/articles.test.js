@@ -26,6 +26,7 @@ describe('TESTS TO CREATE AN ARTICLE', () => {
     try {
       chai.request(app)
         .post('/api/v1/articles')
+        .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
         .send({
           title: newArticle.title,
@@ -49,6 +50,7 @@ describe('TESTS TO CREATE AN ARTICLE', () => {
     try {
       chai.request(app)
         .post('/api/v1/articles')
+        .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
         .send({
           title: newArticle.title,
@@ -70,6 +72,7 @@ describe('TESTS TO CREATE AN ARTICLE', () => {
     try {
       chai.request(app)
         .post('/api/v1/articles')
+        .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
         .send({
           title: '',
@@ -104,6 +107,7 @@ describe('TESTS TO UPDATE AN ARTICLE', () => {
     try {
       chai.request(app)
         .put(`/api/v1/articles/${newArticle.slug}`)
+        .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
         .send({
           title: newArticle.title,
@@ -148,6 +152,7 @@ describe('TESTS TO UPDATE AN ARTICLE', () => {
     try {
       chai.request(app)
         .put(`/api/v1/articles/${newArticle.slug}`)
+        .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${wrongToken}`)
         .send({
           title: newArticle.title,
@@ -337,7 +342,7 @@ describe('TESTS TO DELETE AN ARTICLE', () => {
     }
   });
 
-  it('should update an article successfully', (done) => {
+  it('should delete an article successfully', (done) => {
     try {
       chai.request(app)
         .delete(`/api/v1/articles/${newArticle.slug}`)
@@ -570,6 +575,149 @@ describe('TESTS TO REPORT AN ARTICLE', () => {
           expect(res.status).to.equal(400);
           expect(res.body.errors).to.be.an('object');
           expect(res.body.errors.report).to.eql('report is required');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+});
+
+describe('TESTS TO TAG AN ARTICLE', () => {
+  let newArticle, userToken;
+  before(async () => {
+    const { id, email } = await createTestUser({ });
+    const payload = {
+      id,
+      email
+    };
+    userToken = await generateToken(payload);
+    newArticle = await createArticles(id, { tags: ['kivenshi'] });
+    wrongToken = userToken;
+  });
+
+  it('should tag an article successfully', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/articles')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+          title: newArticle.title,
+          body: newArticle.body,
+          tags: newArticle.tagList
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(201);
+          expect(res.body.payload).to.be.an('object');
+          expect(res.body.payload.title).to.be.a('string');
+          expect(res.body).to.have.property('status');
+          expect(res.body.message).to.eql('Article created successfully');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return "tags does not contain 1 required value(s)" when tags array is empty ', (done) => {
+    try {
+      chai.request(app)
+        .post('/api/v1/articles')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+          title: newArticle.title,
+          body: newArticle.body,
+          tags: []
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.tags).to.eql('tags does not contain 1 required value(s)');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return all tags successfully', (done) => {
+    try {
+      chai.request(app)
+        .get('/api/v1/tags')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.payload).to.be.an('array');
+          expect(res.body).to.have.property('status');
+          expect(res.body.message).to.eql('All tags retrieved');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+});
+
+describe('TESTS TO UPDATE A TAGGED ARTICLE', () => {
+  let newArticle, userToken;
+  before(async () => {
+    const { id, email } = await createTestUser({ });
+    const payload = {
+      id,
+      email
+    };
+    userToken = await generateToken(payload);
+    newArticle = await createArticles(id, { tags: ['meteres'] });
+  });
+
+  it('should update an article with tags successfully', (done) => {
+    try {
+      chai.request(app)
+        .put(`/api/v1/articles/${newArticle.slug}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+          title: newArticle.title,
+          body: newArticle.body,
+          tags: newArticle.tagList
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.payload).to.be.an('object');
+          expect(res.body.payload.title).to.be.a('string');
+          expect(res.body).to.have.property('status');
+          expect(res.body.message).to.equal('Article successfully updated');
+          expect(res.body.payload.tags).to.be.an('array');
+          expect(res.body).to.have.property('status');
+          done();
+        });
+    } catch (err) {
+      throw err.message;
+    }
+  });
+
+  it('should return "tags does not contain 1 required value(s)" when tags array is empty ', (done) => {
+    try {
+      chai.request(app)
+        .put(`/api/v1/articles/${newArticle.slug}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+          title: newArticle.title,
+          body: newArticle.body,
+          tags: []
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errors).to.be.an('object');
+          expect(res.body.errors.tags).to.eql('tags does not contain 1 required value(s)');
           expect(res.body).to.have.property('status');
           done();
         });

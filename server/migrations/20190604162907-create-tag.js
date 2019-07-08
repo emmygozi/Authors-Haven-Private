@@ -6,18 +6,18 @@ module.exports = {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    articleId: {
-      type: Sequelize.UUID,
+    articleSlug: {
+      type: Sequelize.STRING,
       allowNull: false,
       references: {
         model: 'Articles',
-        key: 'id',
+        key: 'slug',
       },
       onDelete: 'CASCADE',
     },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false
+    tagList: {
+      type: Sequelize.ARRAY(Sequelize.TEXT),
+      allowNull: true
     },
     createdAt: {
       allowNull: false,

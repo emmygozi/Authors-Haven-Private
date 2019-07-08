@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Article.hasMany(Tag, {
-      foreignKey: 'articleId'
+      foreignKey: 'articleSlug'
     });
 
     Article.hasMany(Rating, {

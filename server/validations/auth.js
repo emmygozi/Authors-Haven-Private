@@ -61,7 +61,9 @@ export const validateArticle = (article) => {
       .required(),
     body: Joi.string().trim().min(4)
       .required(),
-    image: Joi.string().trim().optional()
+    image: Joi.string().trim().optional(),
+    tags: Joi.array().items(Joi.string().trim().min(2).max(10)
+      .required())
   };
   return Joi.validate(article, schema, {
     language: {

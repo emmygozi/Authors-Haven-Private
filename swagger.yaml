@@ -745,6 +745,21 @@ paths:
             description: "Article was not found"
         security:
         - api_key: []
+  /tags:
+    get:
+      tags:
+      - "tags"
+      summary: "Retrieves all tags"
+      description: "Retrieves all article tags"
+      operationId: "tags"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "All tags retrieved"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+      
 securityDefinitions:
   api_key:
     type: "apiKey"

@@ -14,7 +14,7 @@ describe('ArticleController', () => {
 
   before(async () => {
     const { id } = await createTestUser({});
-    article = (await createArticle(id, {})).get();
+    article = (await createArticle(id, {}));
   });
 
   let sandbox = null;
@@ -106,6 +106,22 @@ describe('ArticleController', () => {
 
     const next = sinon.spy();
     await ArticleController.report({}, {}, next);
+    sinon.assert.calledOnce(next);
+  });
+
+  it('should handle get all tags', async () => {
+    const stubFunc = { findAllArticle };
+    sandbox.stub(stubFunc, 'findAllArticle').rejects('Oops');
+    const next = sinon.spy();
+    await ArticleController.getAllTags({}, {}, next);
+    sinon.assert.calledOnce(next);
+  });
+
+  it('should handle get all ratings', async () => {
+    const stubFunc = { findAllArticle };
+    sandbox.stub(stubFunc, 'findAllArticle').rejects('Oops');
+    const next = sinon.spy();
+    await ArticleController.getArticleRatings({}, {}, next);
     sinon.assert.calledOnce(next);
   });
 });

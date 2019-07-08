@@ -3,7 +3,7 @@ import models from '@models';
 import Pagination from '@helpers/Pagination';
 
 const {
-  Article, User, Rating, Profile, ArticleLike
+  Article, User, Rating, Profile, ArticleLike, Tag
 } = models;
 
 const articleObject = {
@@ -104,9 +104,25 @@ const extractArticle = payload => payload.map((article) => {
   };
 });
 
+
+/**
+   * Get Tags based on the Articles
+   *
+   * @static
+   * @param {*} articleSlug The article slug
+   * @memberof ArticleController
+   * @return {json} return json object
+   */
+const getSpecificTag = async articleSlug => Tag.findOne({
+  where: {
+    articleSlug,
+  }
+});
+
 export {
   findAllArticle,
   findArticle,
   articleObject,
-  extractArticle
+  extractArticle,
+  getSpecificTag
 };
